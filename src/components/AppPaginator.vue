@@ -2,7 +2,10 @@
     <nav
         v-if="pageCount > 0"
     >
-        <ul class="pagination">
+        <ul
+            class="pagination"
+            :class="{ disabled: loading }"
+        >
             <li
                 class="page-item"
                 :class="{ disabled: isFirstPage }"
@@ -79,6 +82,10 @@
         name: "AppPaginator",
 
         computed: {
+            loading() {
+                return this.$store.getters.loading;
+            },
+
             dbSize() {
                 return this.$store.getters.getDbSize;
             },
@@ -140,7 +147,7 @@
 
         methods: {
             changePage(pageNumber) {
-                this.$store.commit('setCurrentPageNumber', pageNumber);
+                this.$store.dispatch('loadMovies', pageNumber);
             },
 
             prevPage() {

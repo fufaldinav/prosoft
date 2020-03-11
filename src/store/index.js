@@ -7,6 +7,7 @@ const axios = require('axios');
 
 export default new Vuex.Store({
     state: {
+        loading: true,
         dbSize: 0,
         pageSize: 15,
         currentPageNumber: 1, //здесь и далее отсчёт страниц начинается с единицы, читай коммент в запросе
@@ -18,6 +19,10 @@ export default new Vuex.Store({
     },
 
     getters: {
+        getLoadStatus: state => {
+            return state.loading;
+        },
+
         getDbSize: state => {
             return state.dbSize;
         },
@@ -36,6 +41,10 @@ export default new Vuex.Store({
     },
 
     mutations: {
+        setLoading(state, status) {
+            state.loading = status;
+        },
+
         setDbSize(state, size) {
             state.dbSize = size;
         },
@@ -61,11 +70,14 @@ export default new Vuex.Store({
 
     actions: {
         async loadMovies({ commit, state }, pageNumber = 1) {
+            commit('setLoading', true);
+
             axios.post('http://185.185.69.80:8082/list', {
                 'page': pageNumber - 1, //перед отправкой запроса причёсываем нумерацию
                 'page_size': state.pageSize
             })
                 .then(response => {
+                    commit('clearMoviesCollection');
                     let data = response.data;
 
                     if (data.hasOwnProperty('ok') && data.ok === true) {
@@ -77,10 +89,15 @@ export default new Vuex.Store({
                     }
 
                     console.log(response.data);
+
+                    commit('setCurrentPageNumber', pageNumber);
                 })
                 .catch(error => {
                     console.log(error);
                 })
+                .finally(() => {
+                    commit('setLoading', false);
+                });
         }
     },
 
