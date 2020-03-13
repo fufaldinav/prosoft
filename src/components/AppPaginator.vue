@@ -147,7 +147,8 @@
 
         methods: {
             changePage(pageNumber) {
-                this.$store.dispatch('loadMovies', pageNumber);
+                this.$store.commit('setCurrentPageNumber', pageNumber);
+                window.App.$bus.$emit('PageChanged');
             },
 
             prevPage() {

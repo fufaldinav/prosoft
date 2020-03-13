@@ -1,0 +1,30 @@
+body {
+  line-height: 1;
+}
+
+.table-responsive {
+  height: 100%;
+  margin: 0;
+}
+
+.app-header {
+  height: 4rem;
+}
+
+.app-body {
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 8rem);
+  overflow: auto;
+}
+
+.app-footer {
+  position: sticky;
+  bottom: 0;
+  height: 4rem;
+}
+
+.app-table-cell {
+  height: 4rem;
+  overflow: hidden;
+}

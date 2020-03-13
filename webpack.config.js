@@ -9,7 +9,8 @@ module.exports = {
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
-        }
+        },
+        extensions: ['*', '.js', '.vue', '.json']
     },
 
     entry: './src/main.js',
@@ -35,9 +36,9 @@ module.exports = {
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'sass-loader',
+                    'sass-loader'
                 ],
-            },
+            }
         ]
     },
 
