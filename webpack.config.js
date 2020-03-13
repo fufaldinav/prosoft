@@ -1,8 +1,11 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
+    mode: 'development',
+
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
@@ -12,12 +15,8 @@ module.exports = {
     entry: './src/main.js',
 
     output: {
-        path: path.resolve(__dirname, './public/js'),
-        filename: 'app.js'
-    },
-
-    devServer: {
-        overlay: true
+        path: path.resolve(__dirname, './public'),
+        filename: './js/app.js'
     },
 
     module: {
@@ -27,42 +26,18 @@ module.exports = {
                 loader: 'vue-loader'
             },
             {
-                test: /\.css$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader'
-                ]
-            },
-            {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             },
             {
-                test: /\.(scss)$/,
+                test: /\.(sa|sc|c)ss$/,
                 use: [
-                    {
-                        loader: 'style-loader',
-                    },
-                    {
-                        loader: 'css-loader',
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            plugins: function () {
-                                return [
-                                    require('precss'),
-                                    require('autoprefixer')
-                                ];
-                            }
-                        }
-                    },
-                    {
-                        loader: 'sass-loader'
-                    }
-                ]
-            }
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'sass-loader',
+                ],
+            },
         ]
     },
 
@@ -74,12 +49,9 @@ module.exports = {
                 port: 3000,
                 proxy: 'http://prosoft.localhost/'
             }
-        )
-    ],
-
-    devServer: {
-        contentBase: path.join(__dirname, 'public'),
-        inline: true,
-        port: 10000
-    },
+        ),
+        new MiniCssExtractPlugin({
+            filename: './stylesheets/main.css'
+        })
+    ]
 }

@@ -43,8 +43,8 @@
 </template>
 
 <script>
-    import AppMovie from './components/AppMovie.vue';
-    import AppPaginator from './components/AppPaginator.vue';
+    import AppMovie from './AppMovie.vue';
+    import AppPaginator from './AppPaginator.vue';
 
     export default {
         name: "App",

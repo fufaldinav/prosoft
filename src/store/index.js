@@ -69,7 +69,7 @@ export default new Vuex.Store({
     },
 
     actions: {
-        async loadMovies({ commit, state }, pageNumber = 1) {
+        async loadMovies({ commit, state }, pageNumber = state.currentPageNumber) {
             commit('setLoading', true);
 
             axios.post('http://185.185.69.80:8082/list', {
@@ -88,7 +88,7 @@ export default new Vuex.Store({
                         }
                     }
 
-                    console.log(response.data);
+                    console.log(response.data); //TODO удалить
 
                     commit('setCurrentPageNumber', pageNumber);
                 })
