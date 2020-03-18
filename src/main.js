@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import App from './components/App.vue';
+import App from './components/App';
 import store from './store';
+import router from './router';
 
 import 'bootstrap';
 
@@ -14,10 +15,7 @@ Object.defineProperty(Vue.prototype, '$bus', {
 
 window.App = new Vue({
     store,
-
-    components: {
-        App
-    },
+    router,
 
     data: {
         bus: new Vue({})

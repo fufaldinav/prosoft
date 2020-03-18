@@ -76,7 +76,7 @@
 
 <script>
     export default {
-        name: "AppPaginator",
+        name: 'AppPaginator',
 
         computed: {
             loading() {
@@ -84,19 +84,19 @@
             },
 
             dbSize() {
-                return this.$store.getters.getDbSize;
+                return this.$store.state.dbSize;
             },
 
             pageSize() {
-                return this.$store.getters.getPageSize;
+                return this.$store.state.pageSize;
             },
 
             pageCount() {
-                return Math.ceil(this.dbSize / this.pageSize);
+                return this.$store.getters.pageCount;
             },
 
             currentPageNumber() {
-                return this.$store.getters.getCurrentPageNumber;
+                return this.$store.state.currentPageNumber;
             },
 
             isFirstPage() {
@@ -158,7 +158,7 @@
                 this.changePage(pageNumber);
             }
         }
-    }
+    };
 </script>
 
 <style scoped>

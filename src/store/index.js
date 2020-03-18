@@ -9,31 +9,20 @@ export default new Vuex.Store({
     state: {
         loading: true,
         dbSize: 0,
-        pageSize: 15,
+        pageSize: 10,
+        availablePageSizes: [10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         currentPageNumber: 1, //здесь и далее отсчёт страниц начинается с единицы, читай коммент в запросе
         movies: [],
         collections: [],
         companies: [],
         countries: [],
         genres: [],
-        languages: [],
+        languages: []
     },
 
     getters: {
-        getLoadStatus: state => {
-            return state.loading;
-        },
-
-        getDbSize: state => {
-            return state.dbSize;
-        },
-
-        getPageSize: state => {
-            return state.pageSize;
-        },
-
-        getCurrentPageNumber: state => {
-            return state.currentPageNumber;
+        pageCount: state => {
+            return Math.ceil(state.dbSize / state.pageSize);
         },
 
         getLanguages: state => {
@@ -64,10 +53,6 @@ export default new Vuex.Store({
                 if (sortByName !== 0) return sortByName;
                 return 0;
             });
-        },
-
-        getMovies: state => {
-            return state.movies;
         }
     },
 
@@ -180,7 +165,6 @@ export default new Vuex.Store({
                             commit('addMovie', movie);
                         }
                     }
-
 
                 })
                 .catch(error => {

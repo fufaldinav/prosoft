@@ -52,4 +52,4 @@ module.exports = {
             filename: './stylesheets/main.css'
         })
     ]
-}
+};
