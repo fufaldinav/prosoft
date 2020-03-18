@@ -1,15 +1,13 @@
 <template>
-    <nav
+    <ul
         v-if="pageCount > 0"
+        class="pagination mb-0"
+        :class="{ disabled: loading }"
     >
-        <ul
-            class="pagination"
-            :class="{ disabled: loading }"
+        <li
+            class="page-item"
+            :class="{ disabled: isFirstPage }"
         >
-            <li
-                class="page-item"
-                :class="{ disabled: isFirstPage }"
-            >
                 <span
                     v-if="isFirstPage"
                     class="page-link"
@@ -17,20 +15,20 @@
                 >
                     &laquo;
                 </span>
-                <button
-                    v-else
-                    class="page-link"
-                    @click="prevPage"
-                >
-                    <span aria-hidden="true">&laquo;</span>
-                </button>
-            </li>
-            <li
-                v-for="page in items"
-                :key="page.label"
-                class="page-item"
-                :class="{ active: page.active, disabled: page.disable }"
+            <button
+                v-else
+                class="page-link"
+                @click="prevPage"
             >
+                <span aria-hidden="true">&laquo;</span>
+            </button>
+        </li>
+        <li
+            v-for="page in items"
+            :key="page.label"
+            class="page-item"
+            :class="{ active: page.active, disabled: page.disable }"
+        >
                 <span
                     v-if="page.active"
                     class="page-link"
@@ -38,25 +36,25 @@
                 >
                     {{ page.label }}
                 </span>
-                <span
-                    v-else-if="page.disable"
-                    class="page-link"
-                    aria-hidden="true"
-                >
+            <span
+                v-else-if="page.disable"
+                class="page-link"
+                aria-hidden="true"
+            >
                     ...
                 </span>
-                <button
-                    v-else
-                    class="page-link"
-                    @click="changePage(page.label)"
-                >
-                    {{ page.label }}
-                </button>
-            </li>
-            <li
-                class="page-item"
-                :class="{ disabled: isLastPage }"
+            <button
+                v-else
+                class="page-link"
+                @click="changePage(page.label)"
             >
+                {{ page.label }}
+            </button>
+        </li>
+        <li
+            class="page-item"
+            :class="{ disabled: isLastPage }"
+        >
                 <span
                     v-if="isLastPage"
                     class="page-link"
@@ -64,17 +62,16 @@
                 >
                     &raquo;
                 </span>
-                <a
-                    v-else
-                    class="page-link"
-                    href="#"
-                    @click.prevent="nextPage"
-                >
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+            <a
+                v-else
+                class="page-link"
+                href="#"
+                @click.prevent="nextPage"
+            >
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
 </template>
 
 <script>

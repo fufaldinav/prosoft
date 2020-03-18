@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <div class="container-fluid px-0 app-header">
-        </div>
-        <div class="container-fluid px-0 app-body">
+    <div id="app">
+        <header class="container-fluid px-0 app-header">
+        </header>
+        <main class="container-fluid px-0 app-body">
             <table class="table table-bordered table-striped table-sm table-responsive">
                 <thead class="thead-light">
                 <tr>
@@ -41,10 +41,10 @@
                 </app-movie>
                 </tbody>
             </table>
-        </div>
-        <div class="container-fluid px-0 app-footer">
-            <app-paginator></app-paginator>
-        </div>
+        </main>
+        <footer class="container-fluid px-0 app-footer">
+            <app-paginator/>
+        </footer>
     </div>
 </template>
 

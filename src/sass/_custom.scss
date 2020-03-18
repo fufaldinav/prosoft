@@ -8,20 +8,21 @@ body {
 }
 
 .app-header {
-  height: 4rem;
+  height: 3rem;
 }
 
 .app-body {
   position: sticky;
-  top: 4rem;
-  height: calc(100vh - 8rem);
+  top: 3rem;
+  height: calc(100vh - 6rem);
   overflow: auto;
 }
 
 .app-footer {
+  overflow: hidden;
   position: sticky;
   bottom: 0;
-  height: 4rem;
+  height: 3rem;
 }
 
 .app-table-cell {

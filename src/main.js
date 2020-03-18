@@ -13,7 +13,6 @@ Object.defineProperty(Vue.prototype, '$bus', {
 });
 
 window.App = new Vue({
-    el: '#app',
     store,
 
     components: {
@@ -23,4 +22,6 @@ window.App = new Vue({
     data: {
         bus: new Vue({})
     },
-});
+
+    render: h => h(App)
+}).$mount('#app');
