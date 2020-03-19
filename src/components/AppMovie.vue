@@ -57,7 +57,7 @@
                 <template v-if="movie.production_countries !== null">
                     <span
                         v-for="n in movie.production_countries.length"
-                        :key="n"
+                        :key="`production_countries_${movie.id}_${n}`"
                     >
                         {{ movie.production_countries[n - 1].name }}{{ n < movie.production_countries.length ? ',&#160;' : '' }}
                     </span>
@@ -81,7 +81,7 @@
                 <template v-if="movie.genres !== null">
                     <span
                         v-for="n in movie.genres.length"
-                        :key="n"
+                        :key="`genres_${movie.id}_${n}`"
                     >
                         <a
                             href="#"
@@ -179,7 +179,7 @@
                 <template v-if="movie.spoken_languages !== null">
                     <span
                         v-for="n in movie.spoken_languages.length"
-                        :key="n"
+                        :key="`spoken_languages_${movie.id}_${n}`"
                     >
                         <a
                             href="#"
@@ -207,7 +207,7 @@
                 <template v-if="movie.production_companies !== null">
                     <span
                         v-for="n in movie.production_companies.length"
-                        :key="n"
+                        :key="`production_companies_${movie.id}_${n}`"
                     >
                         {{ movie.production_companies[n - 1].name }}{{ n < movie.production_companies.length ? ',&#160;' : '' }}
                     </span>

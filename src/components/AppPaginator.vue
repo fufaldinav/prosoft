@@ -8,13 +8,13 @@
             class="page-item"
             :class="{ disabled: isFirstPage }"
         >
-                <span
-                    v-if="isFirstPage"
-                    class="page-link"
-                    aria-hidden="true"
-                >
-                    &laquo;
-                </span>
+            <span
+                v-if="isFirstPage"
+                class="page-link"
+                aria-hidden="true"
+            >
+                &laquo;
+            </span>
             <button
                 v-else
                 class="page-link"
@@ -25,19 +25,21 @@
         </li>
         <li
             v-for="page in items"
-            :key="page.label"
+            :key="`page_item_${page.label}`"
             class="page-item"
             :class="{ active: page.active, disabled: page.disable }"
         >
-                <span
-                    v-if="page.active"
-                    class="page-link"
-                    aria-hidden="true"
-                >
-                    {{ page.label }}
-                </span>
+            <span
+                v-if="page.active"
+                :key="`page_active_${page.label}`"
+                class="page-link"
+                aria-hidden="true"
+            >
+                {{ page.label }}
+            </span>
             <span
                 v-else-if="page.disable"
+                :key="`page_dots_${page.label}`"
                 class="page-link"
                 aria-hidden="true"
             >
@@ -45,6 +47,7 @@
                 </span>
             <button
                 v-else
+                :key="`page_link_${page.label}`"
                 class="page-link"
                 @click="changePage(page.label)"
             >
@@ -55,13 +58,13 @@
             class="page-item"
             :class="{ disabled: isLastPage }"
         >
-                <span
-                    v-if="isLastPage"
-                    class="page-link"
-                    aria-hidden="true"
-                >
-                    &raquo;
-                </span>
+            <span
+                v-if="isLastPage"
+                class="page-link"
+                aria-hidden="true"
+            >
+                &raquo;
+            </span>
             <a
                 v-else
                 class="page-link"

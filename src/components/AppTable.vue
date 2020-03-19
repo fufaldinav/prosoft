@@ -7,7 +7,7 @@
             </th>
             <th
                 v-for="(field, key) in displayedFields"
-                :key="key"
+                :key="`field_${key}`"
                 :id="key"
                 scope="col"
             >
@@ -18,7 +18,7 @@
         <tbody>
         <app-movie
             v-for="(movie, n) in movies"
-            :key="movie.id"
+            :key="`app_movie_${movie.id}`"
             :number="rowNumber(n)"
             :movie="movie"
         >
