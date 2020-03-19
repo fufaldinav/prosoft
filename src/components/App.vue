@@ -3,10 +3,10 @@
         <header class="container-fluid px-0 app-header">
         </header>
         <main class="container-fluid px-0 app-body">
-            <router-view/>
+            <RouterView/>
         </main>
         <footer class="container-fluid px-0 app-footer">
-            <app-paginator/>
+            <AppPaginator/>
         </footer>
     </div>
 </template>

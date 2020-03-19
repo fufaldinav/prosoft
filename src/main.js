@@ -4,7 +4,6 @@ import store from './store';
 import router from './router';
 
 import 'bootstrap';
-
 import './sass/main.scss';
 
 Object.defineProperty(Vue.prototype, '$bus', {

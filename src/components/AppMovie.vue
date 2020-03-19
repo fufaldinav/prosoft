@@ -1,162 +1,251 @@
 <template>
     <tr>
-        <th scope="row">{{ number + 1 }}</th>
-        <td>
-            <div class="app-table-cell">{{ movie.id }}</div>
+        <th scope="row">
+            {{ number + 1 }}
+        </th>
+        <td
+            v-if="'id' in displayedFields"
+            headers="id"
+        >
+            <div class="app-table-cell">
+                {{ movie.id }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ movie.title }}</div>
+        <td
+            v-if="'title' in displayedFields"
+            headers="title"
+        >
+            <div class="app-table-cell">
+                {{ movie.title ? movie.title : 'N/A' }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ movie.original_title }}</div>
+        <td
+            v-if="'original_title' in displayedFields"
+            headers="original_title"
+        >
+            <div class="app-table-cell">
+                {{ movie.original_title ? movie.original_title : 'N/A'}}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ date }}</div>
+        <td
+            v-if="'release_date' in displayedFields"
+            headers="release_date"
+        >
+            <div class="app-table-cell">
+                {{ releaseDateFormatted }}
+            </div>
         </td>
-        <td>
+        <td
+            v-if="'status' in displayedFields"
+            headers="status"
+        >
             <div class="app-table-cell">
                 <a
                     v-if="movie.status !== null"
                     href="#"
                     target="_blank"
                     @click.prevent="filter('status', movie.status)"
-                >
-                    {{ movie.status }}
-                </a>
+                >{{ movie.status }}</a>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
+        <td
+            v-if="'production_countries' in displayedFields"
+            headers="production_countries"
+        >
             <div class="app-table-cell">
                 <template v-if="movie.production_countries !== null">
-                    <template v-for="n in movie.production_countries.length">
-                        {{ movie.production_countries[n - 1].name }}<span v-if="n < movie.production_countries.length">,&#160;</span>
-                    </template>
+                    <span
+                        v-for="n in movie.production_countries.length"
+                        :key="n"
+                    >
+                        {{ movie.production_countries[n - 1].name }}{{ n < movie.production_countries.length ? ',&#160;' : '' }}
+                    </span>
                 </template>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ movie.tagline }}</div>
+        <td
+            v-if="'tagline' in displayedFields"
+            headers="tagline"
+        >
+            <div class="app-table-cell">
+                {{ movie.tagline ? movie.tagline : 'N/A' }}
+            </div>
         </td>
-        <td>
+        <td
+            v-if="'genres' in displayedFields"
+            headers="genres"
+        >
             <div class="app-table-cell">
                 <template v-if="movie.genres !== null">
-                    <template v-for="n in movie.genres.length">
+                    <span
+                        v-for="n in movie.genres.length"
+                        :key="n"
+                    >
                         <a
                             href="#"
                             target="_blank"
                             @click.prevent="filter('genres', [movie.genres[n - 1].name])"
-                        >
-                            {{movie.genres[n - 1].name }}</a><span v-if="n < movie.genres.length">,&#160;</span>
-                    </template>
+                        >{{movie.genres[n - 1].name }}</a>{{ n < movie.genres.length ? ',&#160;' : '' }}
+                    </span>
                 </template>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ budget }}</div>
+        <td
+            v-if="'budget' in displayedFields"
+            headers="budget"
+        >
+            <div class="app-table-cell">
+                {{ budgetFormatted }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ revenue }}</div>
+        <td
+            v-if="'revenue' in displayedFields"
+            headers="revenue"
+        >
+            <div class="app-table-cell">
+                {{ revenueFormatted }}
+            </div>
         </td>
-        <td>
+        <td
+            v-if="'adult' in displayedFields"
+            headers="adult"
+        >
             <div class="app-table-cell">
                 <a
                     v-if="movie.adult !== null"
                     href="#"
                     target="_blank"
                     @click.prevent="filter('adult', movie.adult)"
-                >
-                    <span v-if="movie.adult">Yes</span>
-                    <span v-else>No</span>
-                </a>
+                >{{ movie.adult ? 'Yes' : 'No' }}</a>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
+        <td
+            v-if="'belongs_to_collection' in displayedFields"
+            headers="belongs_to_collection"
+        >
             <div class="app-table-cell">
-            <span v-if="movie.belongs_to_collection !== null">
-                {{movie.belongs_to_collection.name }}
-            </span>
-                <span v-else>N/A</span>
+                {{ movie.belongs_to_collection ? movie.belongs_to_collection.name : 'N/A' }}
             </div>
         </td>
-        <td>
+        <td
+            v-if="'homepage' in displayedFields"
+            headers="homepage"
+        >
             <div class="app-table-cell">
                 <a
                     v-if="movie.homepage !== null"
                     :href="movie.homepage"
                     target="_blank"
-                >
-                    link
-                </a>
-                <span v-else>N/A</span></div>
+                >link</a>
+                <span v-else>N/A</span>
+            </div>
         </td>
-        <td>
+        <td
+            v-if="'imdb_id' in displayedFields"
+            headers="imdb_id"
+        >
             <div class="app-table-cell">
                 <a
                     v-if="movie.imdb_id !== null"
                     :href="`http://www.imdb.com/title/${movie.imdb_id}/`"
                     target="_blank"
-                >
-                    IMDB
-                </a>
+                >IMDB</a>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
+        <td
+            v-if="'original_language' in displayedFields"
+            headers="original_language"
+        >
             <div class="app-table-cell">
                 <a
                     v-if="originalLanguage !== null"
                     href="#"
                     target="_blank"
                     @click.prevent="filter('original_language', originalLanguage.iso_639_1)"
-                >
-                    {{ originalLanguage.name }}
-                </a>
+                >{{ originalLanguage.name }}</a>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
+        <td
+            v-if="'spoken_languages' in displayedFields"
+            headers="spoken_languages"
+        >
             <div class="app-table-cell">
                 <template v-if="movie.spoken_languages !== null">
-                    <template v-for="n in movie.spoken_languages.length">
+                    <span
+                        v-for="n in movie.spoken_languages.length"
+                        :key="n"
+                    >
                         <a
                             href="#"
                             target="_blank"
                             @click.prevent="filter('spoken_languages', [movie.spoken_languages[n - 1].iso_639_1])"
-                        >
-                            {{ movie.spoken_languages[n - 1].name }}</a><span v-if="n < movie.spoken_languages.length">,&#160;</span>
-                    </template>
+                        >{{ movie.spoken_languages[n - 1].name }}</a>{{ n < movie.spoken_languages.length ? ',&#160;' : '' }}
+                    </span>
                 </template>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ movie.overview }}</div>
+        <td
+            v-if="'overview' in displayedFields"
+            headers="overview"
+        >
+            <div class="app-table-cell">
+                {{ movie.overview ? movie.overview : 'N/A' }}
+            </div>
         </td>
-        <td>
+        <td
+            v-if="'production_companies' in displayedFields"
+            headers="production_companies"
+        >
             <div class="app-table-cell">
                 <template v-if="movie.production_companies !== null">
-                    <template v-for="n in movie.production_companies.length">
-                        {{ movie.production_companies[n - 1].name }}<span v-if="n < movie.production_companies.length">,&#160;</span>
-                    </template>
+                    <span
+                        v-for="n in movie.production_companies.length"
+                        :key="n"
+                    >
+                        {{ movie.production_companies[n - 1].name }}{{ n < movie.production_companies.length ? ',&#160;' : '' }}
+                    </span>
                 </template>
                 <span v-else>N/A</span>
             </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ runtime }}</div>
+        <td
+            v-if="'runtime' in displayedFields"
+            headers="runtime"
+        >
+            <div class="app-table-cell">
+                {{ runtimeFormatted }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ popularity }}</div>
+        <td
+            v-if="'popularity' in displayedFields"
+            headers="popularity"
+        >
+            <div class="app-table-cell">
+                {{ popularityShort }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ voteAverage }}</div>
+        <td
+            v-if="'vote_average' in displayedFields"
+            headers="vote_average"
+        >
+            <div class="app-table-cell">
+                {{ voteAverageShort }}
+            </div>
         </td>
-        <td>
-            <div class="app-table-cell">{{ movie.vote_count }}</div>
+        <td
+            v-if="'vote_count' in displayedFields"
+            headers="vote_count"
+        >
+            <div class="app-table-cell">
+                {{ movie.vote_count ? movie.vote_count : 'N/A' }}
+            </div>
         </td>
     </tr>
 </template>
@@ -177,8 +266,8 @@
         },
 
         computed: {
-            dbLanguages() {
-                return this.$store.state.languages;
+            displayedFields() {
+                return this.$store.getters.getDisplayedFields;
             },
 
             originalLanguage() {
@@ -191,13 +280,13 @@
                 return lang;
             },
 
-            budget() {
-                if (this.movie.budget === null) return `N/A`;
+            budgetFormatted() {
+                if (this.movie.budget === null) return 'N/A';
                 return `\$${this.formatNumber(this.movie.budget)}`;
             },
 
-            date() {
-                if (this.movie.release_date === null) return `N/A`;
+            releaseDateFormatted() {
+                if (this.movie.release_date === null) return 'N/A';
                 return new Date(this.movie.release_date).toLocaleString(document.documentElement.lang, {
                     day: 'numeric',
                     month: 'short',
@@ -205,18 +294,18 @@
                 });
             },
 
-            popularity() {
-                if (this.movie.popularity === null) return `N/A`;
+            popularityShort() {
+                if (this.movie.popularity === null) return 'N/A';
                 return this.movie.popularity.toFixed(2);
             },
 
-            revenue() {
-                if (this.movie.revenue === null) return `N/A`;
+            revenueFormatted() {
+                if (this.movie.revenue === null) return 'N/A';
                 return `\$${this.formatNumber(this.movie.revenue)}`;
             },
 
-            runtime() {
-                if (this.movie.runtime === null) return `N/A`;
+            runtimeFormatted() {
+                if (this.movie.runtime === null) return 'N/A';
 
                 let hours = Math.floor(this.movie.runtime / 60);
                 if (hours > 0) {
@@ -226,8 +315,8 @@
                 }
             },
 
-            voteAverage() {
-                if (this.movie.vote_average === null) return `N/A`;
+            voteAverageShort() {
+                if (this.movie.vote_average === null) return 'N/A';
                 return this.movie.vote_average.toFixed(1);
             }
         },
@@ -237,7 +326,7 @@
                 return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
             },
 
-            filter(field, argument) {
+            filter(field, argument) { //TODO
                 let f = {};
                 f[field] = argument;
                 this.$store.commit('setCurrentPageNumber', 1);
