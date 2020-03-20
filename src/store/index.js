@@ -98,12 +98,7 @@ export default new Vuex.Store({
         },
 
         getDisplayedFields: state => {
-            return Object.keys(state.fields)
-                .filter(key => state.fields[key].shown)
-                .reduce((obj, key) => {
-                    obj[key] = state.fields[key];
-                    return obj;
-                }, {});
+            return  Object.keys(state.fields).filter(key => state.fields[key].shown);
         },
 
         getCollections: state => {
@@ -213,7 +208,9 @@ export default new Vuex.Store({
                 .then(response => {
                     console.log(response.data); //TODO удалить
 
-                    commit('clearMovies');
+                    if (state.movies.length > 0) {
+                        commit('clearMovies');
+                    }
 
                     let responseData = response.data;
 

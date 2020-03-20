@@ -1,10 +1,10 @@
 <template>
     <tr>
         <th scope="row">
-            {{ number + 1 }}
+            {{ number }}
         </th>
         <td
-            v-if="'id' in displayedFields"
+            v-if="displayedFields.indexOf('id') > -1 "
             headers="id"
         >
             <div class="app-table-cell">
@@ -12,7 +12,7 @@
             </div>
         </td>
         <td
-            v-if="'title' in displayedFields"
+            v-if="displayedFields.indexOf('title') > -1 "
             headers="title"
         >
             <div class="app-table-cell">
@@ -20,7 +20,7 @@
             </div>
         </td>
         <td
-            v-if="'original_title' in displayedFields"
+            v-if="displayedFields.indexOf('original_title') > -1 "
             headers="original_title"
         >
             <div class="app-table-cell">
@@ -28,7 +28,7 @@
             </div>
         </td>
         <td
-            v-if="'release_date' in displayedFields"
+            v-if="displayedFields.indexOf('release_date') > -1 "
             headers="release_date"
         >
             <div class="app-table-cell">
@@ -36,7 +36,7 @@
             </div>
         </td>
         <td
-            v-if="'status' in displayedFields"
+            v-if="displayedFields.indexOf('status') > -1 "
             headers="status"
         >
             <div class="app-table-cell">
@@ -50,7 +50,7 @@
             </div>
         </td>
         <td
-            v-if="'production_countries' in displayedFields"
+            v-if="displayedFields.indexOf('production_countries') > -1 "
             headers="production_countries"
         >
             <div class="app-table-cell">
@@ -66,7 +66,7 @@
             </div>
         </td>
         <td
-            v-if="'tagline' in displayedFields"
+            v-if="displayedFields.indexOf('tagline') > -1 "
             headers="tagline"
         >
             <div class="app-table-cell">
@@ -74,7 +74,7 @@
             </div>
         </td>
         <td
-            v-if="'genres' in displayedFields"
+            v-if="displayedFields.indexOf('genres') > -1 "
             headers="genres"
         >
             <div class="app-table-cell">
@@ -94,7 +94,7 @@
             </div>
         </td>
         <td
-            v-if="'budget' in displayedFields"
+            v-if="displayedFields.indexOf('budget') > -1 "
             headers="budget"
         >
             <div class="app-table-cell">
@@ -102,7 +102,7 @@
             </div>
         </td>
         <td
-            v-if="'revenue' in displayedFields"
+            v-if="displayedFields.indexOf('revenue') > -1 "
             headers="revenue"
         >
             <div class="app-table-cell">
@@ -110,7 +110,7 @@
             </div>
         </td>
         <td
-            v-if="'adult' in displayedFields"
+            v-if="displayedFields.indexOf('adult') > -1 "
             headers="adult"
         >
             <div class="app-table-cell">
@@ -124,7 +124,7 @@
             </div>
         </td>
         <td
-            v-if="'belongs_to_collection' in displayedFields"
+            v-if="displayedFields.indexOf('belongs_to_collection') > -1 "
             headers="belongs_to_collection"
         >
             <div class="app-table-cell">
@@ -132,7 +132,7 @@
             </div>
         </td>
         <td
-            v-if="'homepage' in displayedFields"
+            v-if="displayedFields.indexOf('homepage') > -1 "
             headers="homepage"
         >
             <div class="app-table-cell">
@@ -145,7 +145,7 @@
             </div>
         </td>
         <td
-            v-if="'imdb_id' in displayedFields"
+            v-if="displayedFields.indexOf('imdb_id') > -1 "
             headers="imdb_id"
         >
             <div class="app-table-cell">
@@ -158,7 +158,7 @@
             </div>
         </td>
         <td
-            v-if="'original_language' in displayedFields"
+            v-if="displayedFields.indexOf('original_language') > -1 "
             headers="original_language"
         >
             <div class="app-table-cell">
@@ -172,7 +172,7 @@
             </div>
         </td>
         <td
-            v-if="'spoken_languages' in displayedFields"
+            v-if="displayedFields.indexOf('spoken_languages') > -1 "
             headers="spoken_languages"
         >
             <div class="app-table-cell">
@@ -192,7 +192,7 @@
             </div>
         </td>
         <td
-            v-if="'overview' in displayedFields"
+            v-if="displayedFields.indexOf('overview') > -1 "
             headers="overview"
         >
             <div class="app-table-cell">
@@ -200,7 +200,7 @@
             </div>
         </td>
         <td
-            v-if="'production_companies' in displayedFields"
+            v-if="displayedFields.indexOf('production_companies') > -1 "
             headers="production_companies"
         >
             <div class="app-table-cell">
@@ -216,7 +216,7 @@
             </div>
         </td>
         <td
-            v-if="'runtime' in displayedFields"
+            v-if="displayedFields.indexOf('runtime') > -1 "
             headers="runtime"
         >
             <div class="app-table-cell">
@@ -224,7 +224,7 @@
             </div>
         </td>
         <td
-            v-if="'popularity' in displayedFields"
+            v-if="displayedFields.indexOf('popularity') > -1 "
             headers="popularity"
         >
             <div class="app-table-cell">
@@ -232,7 +232,7 @@
             </div>
         </td>
         <td
-            v-if="'vote_average' in displayedFields"
+            v-if="displayedFields.indexOf('vote_average') > -1 "
             headers="vote_average"
         >
             <div class="app-table-cell">
@@ -240,7 +240,7 @@
             </div>
         </td>
         <td
-            v-if="'vote_count' in displayedFields"
+            v-if="displayedFields.indexOf('vote_count') > -1 "
             headers="vote_count"
         >
             <div class="app-table-cell">
@@ -326,7 +326,7 @@
                 return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
             },
 
-            filter(field, argument) { //TODO
+            filter(field, argument) { //TODO доделать!
                 let f = {};
                 f[field] = argument;
                 this.$store.commit('setCurrentPageNumber', 1);

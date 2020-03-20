@@ -6,12 +6,12 @@
                 #
             </th>
             <th
-                v-for="(field, key) in displayedFields"
-                :key="`field_${key}`"
-                :id="key"
+                v-for="field in displayedFields"
+                :key="`field_${field}`"
+                :id="field"
                 scope="col"
             >
-                {{ field.name }}
+                {{ fields[field].name }}
             </th>
         </tr>
         </thead>
@@ -40,6 +40,10 @@
                 return this.$store.state.currentPageNumber;
             },
 
+            fields() {
+                return this.$store.state.fields;
+            },
+
             displayedFields() {
                 return this.$store.getters.getDisplayedFields;
             },
@@ -51,7 +55,7 @@
 
         methods: {
             rowNumber(n) {
-                return n + (this.currentPageNumber - 1) * 10;
+                return n + 1 + (this.currentPageNumber - 1) * 10;
             }
         }
     };
