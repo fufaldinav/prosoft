@@ -33,24 +33,24 @@ export default new Vuex.Store({
         pageSize: 10,
         availablePageSizes: [0, 10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         fields: {
-            'id': { 'name': 'ID', 'shown': true, 'sortable': false },
-            'title': { 'name': 'Title', 'shown': true, 'sortable': false },
-            'original_title': { 'name': 'Original title', 'shown': true, 'sortable': false },
+            'id': { 'name': 'ID', 'shown': true },
+            'title': { 'name': 'Title', 'shown': true },
+            'original_title': { 'name': 'Original title', 'shown': true },
             'release_date': { 'name': 'Release date', 'shown': true, 'sortable': true },
             'status': { 'name': 'Status', 'shown': true, 'sortable': true },
-            'production_countries': { 'name': 'Countries', 'shown': true, 'sortable': false },
-            'tagline': { 'name': 'Tagline', 'shown': true, 'sortable': false },
-            'genres': { 'name': 'Genres', 'shown': true, 'sortable': false },
+            'production_countries': { 'name': 'Countries', 'shown': true },
+            'tagline': { 'name': 'Tagline', 'shown': true },
+            'genres': { 'name': 'Genres', 'shown': true },
             'budget': { 'name': 'Budget', 'shown': true, 'sortable': true },
             'revenue': { 'name': 'Revenue', 'shown': true, 'sortable': true },
-            'adult': { 'name': 'Adult', 'shown': true, 'sortable': false },
-            'belongs_to_collection': { 'name': 'Collection', 'shown': true, 'sortable': false },
-            'homepage': { 'name': 'Homepage', 'shown': true, 'sortable': false },
+            'adult': { 'name': 'Adult', 'shown': true },
+            'belongs_to_collection': { 'name': 'Collection', 'shown': true },
+            'homepage': { 'name': 'Homepage', 'shown': true },
             'imdb_id': { 'name': 'IMDB', 'shown': true, 'sortable': true },
             'original_language': { 'name': 'Original language', 'shown': true, 'sortable': true },
-            'spoken_languages': { 'name': 'Language', 'shown': true, 'sortable': false },
-            'overview': { 'name': 'Overview', 'shown': true, 'sortable': false },
-            'production_companies': { 'name': 'Production Co', 'shown': true, 'sortable': false },
+            'spoken_languages': { 'name': 'Language', 'shown': true },
+            'overview': { 'name': 'Overview', 'shown': true },
+            'production_companies': { 'name': 'Production Co', 'shown': true },
             'runtime': { 'name': 'Runtime', 'shown': true, 'sortable': true },
             'popularity': { 'name': 'Popularity', 'shown': true, 'sortable': true },
             'vote_average': { 'name': 'Vote average', 'shown': true, 'sortable': true },
@@ -173,45 +173,31 @@ export default new Vuex.Store({
         },
 
         clearMovies(state) {
-            while (state.movies.length > 0) {
-                state.movies.pop();
-            }
+            state.movies = [];
         },
 
         addCollection(state, collection) {
-            if (state.collections.indexOf(collection) === -1) {
-                state.collections.push(collection);
-            }
+            state.collections.push(collection);
         },
 
         addCompany(state, company) {
-            if (state.companies.indexOf(company) === -1) {
-                state.companies.push(company);
-            }
+            state.companies.push(company);
         },
 
         addCountry(state, country) {
-            if (state.countries.indexOf(country) === -1) {
-                state.countries.push(country);
-            }
+            state.countries.push(country);
         },
 
         addGenre(state, genre) {
-            if (state.genres.indexOf(genre) === -1) {
-                state.genres.push(genre);
-            }
+            state.genres.push(genre);
         },
 
         addLanguage(state, language) {
-            if (state.languages.indexOf(language) === -1) {
-                state.languages.push(language);
-            }
+            state.languages.push(language);
         },
 
         addStatus(state, status) {
-            if (state.statuses.indexOf(status) === -1) {
-                state.statuses.push(status);
-            }
+            state.statuses.push(status);
         }
     },
 
@@ -229,38 +215,52 @@ export default new Vuex.Store({
 
                     commit('clearMovies');
 
-                    let data = response.data;
+                    let responseData = response.data;
 
-                    if ('ok' in data && data.ok === true) {
-                        commit('setDbSize', data.data_size);
+                    if ('ok' in responseData && responseData.ok === true) {
+                        commit('setDbSize', responseData.data_size);
 
-                        for (let movie of data.data) {
+                        for (let movie of responseData.data) {
                             if (movie.belongs_to_collection !== null) {
-                                commit('addCollection', movie.belongs_to_collection);
+                                if (state.collections.find(e => e.id === movie.belongs_to_collection.id) === undefined) {
+                                    commit('addCollection', movie.belongs_to_collection);
+                                }
                             }
 
                             if (movie.production_companies !== null) {
                                 for (let company of movie.production_companies) {
-                                    commit('addCompany', company);
+                                    if (state.companies.find(e => e.id === company.id) === undefined) {
+                                        commit('addCompany', company);
+                                    }
                                 }
                             }
 
                             if (movie.production_countries !== null) {
                                 for (let country of movie.production_countries) {
-                                    commit('addCountry', country);
+                                    if (state.countries.find(e => e.iso_3166_1 === country.iso_3166_1) === undefined) {
+                                        commit('addCountry', country);
+                                    }
                                 }
                             }
 
                             if (movie.genres !== null) {
                                 for (let genre of movie.genres) {
-                                    commit('addGenre', genre);
+                                    if (state.genres.find(e => e.id === genre.id) === undefined) {
+                                        commit('addGenre', genre);
+                                    }
                                 }
                             }
 
                             if (movie.spoken_languages !== null) {
                                 for (let language of movie.spoken_languages) {
-                                    commit('addLanguage', language);
+                                    if (state.languages.find(e => e.iso_639_1 === language.iso_639_1) === undefined) {
+                                        commit('addLanguage', language);
+                                    }
                                 }
+                            }
+
+                            if (state.statuses.indexOf(movie.status) === -1) {
+                                commit('addStatus', movie.status);
                             }
 
                             commit('addMovie', movie);
