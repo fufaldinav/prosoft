@@ -86,14 +86,6 @@
                 return this.$store.getters.loading;
             },
 
-            dbSize() {
-                return this.$store.state.dbSize;
-            },
-
-            pageSize() {
-                return this.$store.state.pageSize;
-            },
-
             pageCount() {
                 return this.$store.getters.pageCount;
             },

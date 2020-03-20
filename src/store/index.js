@@ -82,7 +82,7 @@ export default new Vuex.Store({
             'vote_count_min': null,    //Integer
             'vote_count_max': null     //Integer
         },
-        dbSize: 0,
+        dataSize: 0,
         movies: [],
         collections: [],
         companies: [],
@@ -94,7 +94,7 @@ export default new Vuex.Store({
 
     getters: {
         pageCount: state => {
-            return Math.ceil(state.dbSize / state.pageSize);
+            return Math.ceil(state.dataSize / state.pageSize);
         },
 
         getDisplayedFields: state => {
@@ -164,8 +164,8 @@ export default new Vuex.Store({
             state.pageSize = size;
         },
 
-        setDbSize(state, size) {
-            state.dbSize = size;
+        setDataSize(state, size) {
+            state.dataSize = size;
         },
 
         addMovie(state, movie) {
@@ -218,7 +218,10 @@ export default new Vuex.Store({
                     let responseData = response.data;
 
                     if ('ok' in responseData && responseData.ok === true) {
-                        commit('setDbSize', responseData.data_size);
+                        const dataSize = responseData.data_size;
+                        if (dataSize !== state.dataSize) {
+                            commit('setDataSize', dataSize);
+                        }
 
                         for (let movie of responseData.data) {
                             if (movie.belongs_to_collection !== null) {
