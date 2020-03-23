@@ -40,6 +40,10 @@
                 return this.$store.state.currentPageNumber;
             },
 
+            pageSize() {
+                return this.$store.state.pageSize;
+            },
+
             fields() {
                 return this.$store.state.fields;
             },
@@ -59,7 +63,7 @@
 
         methods: {
             rowNumber(n) {
-                return n + 1 + (this.currentPageNumber - 1) * 10;
+                return n + 1 + (this.currentPageNumber - 1) * this.pageSize;
             },
 
             checkQuery(query = {}) {
