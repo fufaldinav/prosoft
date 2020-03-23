@@ -104,13 +104,13 @@ export default new Vuex.Store({
 
         getCollections: state => {
             return state.collections.sort((a, b) => {
-                return naturalCompare(a, b);
+                return naturalCompare(a.name, b.name);
             });
         },
 
         getCompanies: state => {
             return state.companies.sort((a, b) => {
-                return naturalCompare(a, b);
+                return naturalCompare(a.name, b.name);
             });
         },
 
