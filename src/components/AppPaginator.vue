@@ -140,7 +140,7 @@
         methods: {
             changePage(pageNumber) {
                 this.$store.commit('setCurrentPageNumber', pageNumber);
-                window.App.$bus.$emit('PageChanged');
+                this.$router.push({ path: this.$route.path, query: { ...this.$route.query, 'page': pageNumber }});
             },
 
             prevPage() {

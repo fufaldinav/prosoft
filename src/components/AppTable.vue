@@ -50,13 +50,62 @@
 
             movies() {
                 return this.$store.state.movies;
+            },
+
+            pageCount() {
+                return this.$store.getters.pageCount;
             }
         },
 
         methods: {
             rowNumber(n) {
                 return n + 1 + (this.currentPageNumber - 1) * 10;
+            },
+
+            checkQuery(query = {}) {
+                let pageNumber = query.page ? parseInt(query.page, 10) : this.$store.state.currentPageNumber;
+                if (isNaN(pageNumber) || pageNumber < 1) {
+                    pageNumber = this.$store.state.currentPageNumber;
+                }
+                if (pageNumber !== this.$store.state.currentPageNumber) {
+                    this.$store.commit('setCurrentPageNumber', pageNumber);
+                }
+
+                let pageSize = query.page_size ? parseInt(query.page_size, 10) : this.$store.state.pageSize;
+                if (isNaN(pageSize) || this.$store.state.availablePageSizes.indexOf(pageSize) === -1) {
+                    pageSize = this.$store.state.pageSize;
+                }
+                if (pageSize !== this.$store.state.pageSize) {
+                    this.$store.commit('setPageSize', pageSize);
+                }
+
+                return {...query, page: pageNumber, page_size: pageSize};
             }
+        },
+
+        beforeRouteEnter(to, from, next) {
+            next(vm => {
+                console.log('enter'); //TODO удалить
+                let query = vm.checkQuery(to.query);
+                if (to.query.page === undefined) {
+                    vm.$router.replace({ path: to.path, query: query });
+                } else {
+                    vm.$store.dispatch('loadMovies', query)
+                        .then(() => {
+                            if (query.page > vm.pageCount) {
+                                vm.$router.replace({ path: to.path, query: { ...query, 'page': vm.pageCount }});
+                            }
+                        });
+                }
+            });
+        },
+
+        beforeRouteUpdate(to, from, next) {
+            console.log('update'); //TODO удалить
+            let query = this.checkQuery(to.query);
+            this.$store.dispatch('loadMovies', query)
+                .then(() => next())
+                .catch(() => next(false));
         }
     };
 </script>

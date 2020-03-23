@@ -18,17 +18,7 @@
     export default {
         name: 'App',
 
-        components: { AppTable, AppPaginator },
-
-        mounted() {
-            this.$bus.$on('PageChanged', () => {
-                this.$store.dispatch('loadMovies');
-            });
-        },
-
-        beforeDestroy() {
-            this.$bus.$off('PageChanged');
-        }
+        components: { AppTable, AppPaginator }
     };
 </script>
 

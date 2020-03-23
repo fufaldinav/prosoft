@@ -56,6 +56,7 @@ export default new Vuex.Store({
             'vote_average': { 'name': 'Vote average', 'shown': true, 'sortable': true },
             'vote_count': { 'name': 'Vote count', 'shown': true, 'sortable': true }
         },
+        availableSortField: ['imdb_id', 'budget', 'original_language', 'popularity', 'release_date', 'revenue', 'runtime', 'status', 'vote_average', 'vote_count'],
         sortField: null,
         sortOrder: 'asc',
         filters: {
@@ -98,7 +99,7 @@ export default new Vuex.Store({
         },
 
         getDisplayedFields: state => {
-            return  Object.keys(state.fields).filter(key => state.fields[key].shown);
+            return Object.keys(state.fields).filter(key => state.fields[key].shown);
         },
 
         getCollections: state => {
@@ -197,79 +198,95 @@ export default new Vuex.Store({
     },
 
     actions: {
-        async loadMovies({ commit, state }, filter = []) {
+        async loadMovies({ commit, state }, query = {}) {
             commit('setLoading', true);
 
-            axios.post('http://185.185.69.80:8082/list', {
-                'page': state.currentPageNumber - 1, //перед отправкой запроса причёсываем нумерацию
-                'page_size': state.pageSize,
-                ...filter
+            let page = query.page ? query.page : state.currentPageNumber;
+            let pageSize = query.page_size ? query.page_size : state.pageSize;
+
+            return axios.post('http://185.185.69.80:8082/list', {
+                ...query,
+                'page': page - 1, //перед отправкой запроса причёсываем нумерацию
+                'page_size': pageSize
             })
                 .then(response => {
                     console.log(response.data); //TODO удалить
+
+                    let responseData = response.data;
+
+                    if (! 'ok' in responseData || responseData.ok !== true) {
+                        throw new Error('response is not ok =((');
+                    }
+
+                    const dataSize = responseData.data_size ? responseData.data_size : 0;
+                    const movies = responseData.data ? responseData.data : [];
+
+                    if (dataSize === 0) {
+                        throw new Error('no data returned');
+                    }
+
+                    if (dataSize !== state.dataSize) {
+                        commit('setDataSize', dataSize);
+                    }
+
+                    if (movies.length === 0) {
+                        return dataSize;
+                    }
 
                     if (state.movies.length > 0) {
                         commit('clearMovies');
                     }
 
-                    let responseData = response.data;
-
-                    if ('ok' in responseData && responseData.ok === true) {
-                        const dataSize = responseData.data_size;
-                        if (dataSize !== state.dataSize) {
-                            commit('setDataSize', dataSize);
+                    for (let movie of movies) {
+                        if (movie.belongs_to_collection !== null) {
+                            if (state.collections.find(e => e.id === movie.belongs_to_collection.id) === undefined) {
+                                commit('addCollection', movie.belongs_to_collection);
+                            }
                         }
 
-                        for (let movie of responseData.data) {
-                            if (movie.belongs_to_collection !== null) {
-                                if (state.collections.find(e => e.id === movie.belongs_to_collection.id) === undefined) {
-                                    commit('addCollection', movie.belongs_to_collection);
+                        if (movie.production_companies !== null) {
+                            for (let company of movie.production_companies) {
+                                if (state.companies.find(e => e.id === company.id) === undefined) {
+                                    commit('addCompany', company);
                                 }
                             }
-
-                            if (movie.production_companies !== null) {
-                                for (let company of movie.production_companies) {
-                                    if (state.companies.find(e => e.id === company.id) === undefined) {
-                                        commit('addCompany', company);
-                                    }
-                                }
-                            }
-
-                            if (movie.production_countries !== null) {
-                                for (let country of movie.production_countries) {
-                                    if (state.countries.find(e => e.iso_3166_1 === country.iso_3166_1) === undefined) {
-                                        commit('addCountry', country);
-                                    }
-                                }
-                            }
-
-                            if (movie.genres !== null) {
-                                for (let genre of movie.genres) {
-                                    if (state.genres.find(e => e.id === genre.id) === undefined) {
-                                        commit('addGenre', genre);
-                                    }
-                                }
-                            }
-
-                            if (movie.spoken_languages !== null) {
-                                for (let language of movie.spoken_languages) {
-                                    if (state.languages.find(e => e.iso_639_1 === language.iso_639_1) === undefined) {
-                                        commit('addLanguage', language);
-                                    }
-                                }
-                            }
-
-                            if (state.statuses.indexOf(movie.status) === -1) {
-                                commit('addStatus', movie.status);
-                            }
-
-                            commit('addMovie', movie);
                         }
+
+                        if (movie.production_countries !== null) {
+                            for (let country of movie.production_countries) {
+                                if (state.countries.find(e => e.iso_3166_1 === country.iso_3166_1) === undefined) {
+                                    commit('addCountry', country);
+                                }
+                            }
+                        }
+
+                        if (movie.genres !== null) {
+                            for (let genre of movie.genres) {
+                                if (state.genres.find(e => e.id === genre.id) === undefined) {
+                                    commit('addGenre', genre);
+                                }
+                            }
+                        }
+
+                        if (movie.spoken_languages !== null) {
+                            for (let language of movie.spoken_languages) {
+                                if (state.languages.find(e => e.iso_639_1 === language.iso_639_1) === undefined) {
+                                    commit('addLanguage', language);
+                                }
+                            }
+                        }
+
+                        if (state.statuses.indexOf(movie.status) === -1) {
+                            commit('addStatus', movie.status);
+                        }
+
+                        commit('addMovie', movie);
                     }
 
+                    return dataSize;
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.log(error); //TODO обработка ошибки загрузки
                 })
                 .finally(() => {
                     commit('setLoading', false);
