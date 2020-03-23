@@ -56,8 +56,8 @@ export default new Vuex.Store({
             'vote_average': { 'name': 'Vote average', 'shown': true, 'sortable': true },
             'vote_count': { 'name': 'Vote count', 'shown': true, 'sortable': true }
         },
-        availableSortField: ['imdb_id', 'budget', 'original_language', 'popularity', 'release_date', 'revenue', 'runtime', 'status', 'vote_average', 'vote_count'],
         sortField: null,
+        availableSortField: ['imdb_id', 'budget', 'original_language', 'popularity', 'release_date', 'revenue', 'runtime', 'status', 'vote_average', 'vote_count'],
         sortOrder: 'asc',
         filters: {
             'imdb_id': null,           //String - IMDB ID для поиска только одного фильма
@@ -158,6 +158,18 @@ export default new Vuex.Store({
 
         setPageSize(state, size) {
             state.pageSize = size;
+        },
+
+        setSortField(state, field) {
+            state.sortField = field;
+        },
+
+        clearSortField(state) {
+            state.sortField = null;
+        },
+
+        setSortOrder(state, order) {
+            state.sortOrder = order;
         },
 
         setDataSize(state, size) {
