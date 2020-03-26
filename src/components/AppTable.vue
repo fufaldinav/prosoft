@@ -19,7 +19,7 @@
         <app-movie
             v-for="(movie, n) in movies"
             :key="`app_movie_${movie.id}`"
-            :number="rowNumber(n)"
+            :number="getRowNumber(n)"
             :movie="movie"
         >
         </app-movie>
@@ -60,10 +60,6 @@
                 return this.$store.state.sortOrder;
             },
 
-            availableSortField() {
-                return this.$store.state.availableSortField;
-            },
-
             movies() {
                 return this.$store.state.movies;
             },
@@ -74,15 +70,19 @@
 
             displayedFields() {
                 return this.$store.getters.getDisplayedFields;
+            },
+
+            sortableFields() {
+                return this.$store.getters.getSortableFields;
             }
         },
 
         methods: {
-            rowNumber(n) {
+            getRowNumber(n) {
                 return n + 1 + (this.currentPageNumber - 1) * this.pageSize;
             },
 
-            checkQuery(query = {}) {
+            checkQuery(query) {
                 let pageNumber = query.page ? parseInt(query.page, 10) : this.currentPageNumber;
                 if (isNaN(pageNumber) || pageNumber < 1) {
                     pageNumber = this.currentPageNumber;
@@ -99,15 +99,16 @@
                     this.$store.commit('setPageSize', pageSize);
                 }
 
-                let sortField = query.sort_field;
-                if (sortField !== undefined && this.availableSortField.indexOf(sortField) === -1) {
+                let sortField = query.sort_field ? query.sort_field : null;
+                if (sortField !== null && this.sortableFields.indexOf(sortField) === -1) {
                     sortField = this.sortField;
                 }
-                if (sortField === undefined && this.sortField !== null) {
-                    this.$store.commit('clearSortField');
-                }
-                else if (sortField !== this.sortField) {
-                    this.$store.commit('setSortField', sortField);
+                if (sortField !== this.sortField) {
+                    if (sortField) {
+                        this.$store.commit('setSortField', sortField);
+                    } else {
+                        this.$store.commit('clearSortField');
+                    }
                 }
 
                 let sortOrder = query.sort_order ? query.sort_order : this.sortOrder;
@@ -155,7 +156,17 @@
             console.log('update'); //TODO удалить
             let query = this.checkQuery(to.query);
             this.$store.dispatch('loadMovies', query)
-                .then(() => next())
+                .then(() => {
+                    if (query.page > this.pageCount) {
+                        next();
+                        this.$router.replace({
+                            path: to.path,
+                            query: { ...query, 'page': this.pageCount }
+                        });
+                    } else {
+                        next();
+                    }
+                })
                 .catch(() => next(false));
         }
     };

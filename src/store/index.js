@@ -57,7 +57,6 @@ export default new Vuex.Store({
             'vote_count': { 'name': 'Vote count', 'shown': true, 'sortable': true }
         },
         sortField: null,
-        availableSortField: ['imdb_id', 'budget', 'original_language', 'popularity', 'release_date', 'revenue', 'runtime', 'status', 'vote_average', 'vote_count'],
         sortOrder: 'asc',
         filters: {
             'imdb_id': null,           //String - IMDB ID для поиска только одного фильма
@@ -100,6 +99,12 @@ export default new Vuex.Store({
 
         getDisplayedFields: state => {
             return Object.keys(state.fields).filter(key => state.fields[key].shown);
+        },
+
+        getSortableFields: state => {
+            return Object.keys(state.fields).filter(key => {
+                return state.fields[key].hasOwnProperty('sortable') && state.fields[key].sortable === true;
+            });
         },
 
         getCollections: state => {
@@ -213,13 +218,10 @@ export default new Vuex.Store({
         async loadMovies({ commit, state }, query = {}) {
             commit('setLoading', true);
 
-            let page = query.page ? query.page : state.currentPageNumber;
-            let pageSize = query.page_size ? query.page_size : state.pageSize;
-
             return axios.post('http://185.185.69.80:8082/list', {
                 ...query,
-                'page': page - 1, //перед отправкой запроса причёсываем нумерацию
-                'page_size': pageSize
+                'page': (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
+                'page_size': query.page_size ? query.page_size : state.pageSize //чтобы случайно не загрузить всю базу
             })
                 .then(response => {
                     console.log(response.data); //TODO удалить
