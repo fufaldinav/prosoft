@@ -305,14 +305,23 @@
             },
 
             runtimeFormatted() {
-                if (this.movie.runtime === null) return 'N/A';
+                let result = 'N/A';
+                if (this.movie.runtime === null) return result;
 
-                let hours = Math.floor(this.movie.runtime / 60);
+                const minutes = Math.floor(this.movie.runtime % 60);
+                result = `${minutes}min`;
+
+                const hours = Math.floor(this.movie.runtime / 60);
                 if (hours > 0) {
-                    return `${hours}h ${this.movie.runtime % 60}min`;
-                } else {
-                    return `${this.movie.runtime}min`;
+                    result = `${hours}h ` + result;
                 }
+
+                const secs = Math.round((this.movie.runtime % 1) * 60);
+                if (secs > 0) {
+                    result += ` ${secs}sec`;
+                }
+
+                return result;
             },
 
             voteAverageShort() {
