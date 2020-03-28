@@ -57,7 +57,10 @@ export default new Vuex.Store({
             vote_count: { name: 'Vote count', shown: true, sortable: true },
         },
         sortField: null,
-        sortOrder: 'asc',
+        sortOrder: {
+            current: null,
+            available: ['asc', 'desc'],
+        },
         filters: {
             imdb_id: null,           //String - IMDB ID для поиска только одного фильма
             ids: [],                 //Integer[]
@@ -80,7 +83,23 @@ export default new Vuex.Store({
             vote_average_min: null,  //Float
             vote_average_max: null,  //Float
             vote_count_min: null,    //Integer
-            vote_count_max: null,     //Integer
+            vote_count_max: null,    //Integer
+        },
+        filtersMinMax: {
+            budget_min: 0,
+            budget_max: 999999999,
+            popularity_min: 0.00,
+            popularity_max: 9999.99,
+            release_date_min: '1874-12-09',
+            release_date_max: '2174-12-08',
+            revenue_min: 1,
+            revenue_max: 9999999999,
+            runtime_min: 0.01,
+            runtime_max: 9999.99,
+            vote_average_min: 0.00,
+            vote_average_max: 10.00,
+            vote_count_min: 0,
+            vote_count_max: 9999999999,
         },
         dataSize: 0,
         movies: [],
@@ -173,8 +192,53 @@ export default new Vuex.Store({
             state.sortField = null;
         },
 
-        setSortOrder(state, order) {
-            state.sortOrder = order;
+        setCurrentSortOrder(state, order) {
+            if (state.sortOrder.available.indexOf(order) > -1) {
+                state.sortOrder.current = order;
+            }
+        },
+
+        setFilter(state, payload) {
+            if (state.filters.hasOwnProperty(payload.filter)) {
+                state.filters[payload.filter] = payload.value;
+            }
+        },
+
+        clearFilter(state, filter) {
+            if (state.filters.hasOwnProperty(filter)) {
+                if (Array.isArray(state.filters[filter])) {
+                    state.filters[filter] = [];
+                } else {
+                    state.filters[filter] = null;
+                }
+            }
+        },
+
+        clearAllFilters(state) {
+            for (let filter in state.filters) {
+                if (state.filters.hasOwnProperty(filter)) {
+                    if (Array.isArray(state.filters[filter])) {
+                        state.filters[filter] = [];
+                    } else {
+                        state.filters[filter] = null;
+                    }
+                }
+            }
+        },
+
+        addIdToFilter(state, id) {
+            state.filters.ids.push(id);
+        },
+
+        removeIdFromFilter(state, id) {
+            let index = state.filters.ids.indexOf(id);
+            if (index > -1) {
+                state.filters.ids.splice(index, 1);
+            }
+        },
+
+        clearIdsFromFilter(state) {
+            state.filters.ids = [];
         },
 
         setDataSize(state, size) {

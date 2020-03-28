@@ -109,7 +109,7 @@
                     for (let i = 1; i <= this.pageCount; i++) {
                         output.push({
                             label: i,
-                            active: this.currentPageNumber === i
+                            active: this.currentPageNumber === i,
                         });
                     }
 
@@ -128,18 +128,18 @@
                         output.push({
                             label: i,
                             active: this.currentPageNumber === i,
-                            disable: [dotsBefore, dotsAfter].includes(i)
+                            disable: [dotsBefore, dotsAfter].includes(i),
                         });
                     }
                 }
 
                 return output;
-            }
+            },
         },
 
         methods: {
             changePage(pageNumber) {
-                this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: pageNumber }});
+                this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page: pageNumber } });
             },
 
             prevPage() {
@@ -150,8 +150,8 @@
             nextPage() {
                 let pageNumber = this.currentPageNumber < this.pageCount ? this.currentPageNumber + 1 : this.pageCount;
                 this.changePage(pageNumber);
-            }
-        }
+            },
+        },
     };
 </script>
 
