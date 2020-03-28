@@ -257,12 +257,12 @@
         props: {
             number: {
                 type: Number,
-                required: true
+                required: true,
             },
             movie: {
                 type: Object,
-                required: true
-            }
+                required: true,
+            },
         },
 
         computed: {
@@ -274,8 +274,8 @@
                 if (this.movie.original_language === null) return null;
                 let lang = this.$store.state.languages.find(lang => lang.iso_639_1 === this.movie.original_language);
                 if (lang === undefined) return {
-                    'iso_639_1': this.movie.original_language,
-                    'name': this.movie.original_language
+                    iso_639_1: this.movie.original_language,
+                    name: this.movie.original_language,
                 };
                 return lang;
             },
@@ -290,7 +290,7 @@
                 return new Date(this.movie.release_date).toLocaleString(document.documentElement.lang, {
                     day: 'numeric',
                     month: 'short',
-                    year: 'numeric'
+                    year: 'numeric',
                 });
             },
 
@@ -318,7 +318,7 @@
             voteAverageShort() {
                 if (this.movie.vote_average === null) return 'N/A';
                 return this.movie.vote_average.toFixed(1);
-            }
+            },
         },
 
         methods: {
@@ -331,8 +331,8 @@
                 f[field] = argument;
                 this.$store.commit('setCurrentPageNumber', 1);
                 this.$store.dispatch('loadMovies', f);
-            }
-        }
+            },
+        },
     };
 </script>
 

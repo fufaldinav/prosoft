@@ -100,14 +100,14 @@
                 }
 
                 let sortField = query.sort_field ? query.sort_field : null;
-                if (sortField !== null && this.sortableFields.indexOf(sortField) === -1) {
-                    sortField = this.sortField;
+                if (typeof sortField === 'string' && sortField.length > 0 && this.sortableFields.indexOf(sortField) === -1) {
+                    sortField = null;
                 }
                 if (sortField !== this.sortField) {
-                    if (sortField) {
-                        this.$store.commit('setSortField', sortField);
-                    } else {
+                    if (sortField === null) {
                         this.$store.commit('clearSortField');
+                    } else {
+                        this.$store.commit('setSortField', sortField);
                     }
                 }
 
@@ -141,7 +141,7 @@
                                     if (query.page > vm.pageCount) {
                                         vm.$router.replace({
                                             path: to.path,
-                                            query: { ...query, 'page': vm.pageCount }
+                                            query: { ...query, page: vm.pageCount }
                                         });
                                     }
                                 });
@@ -161,7 +161,7 @@
                         next();
                         this.$router.replace({
                             path: to.path,
-                            query: { ...query, 'page': this.pageCount }
+                            query: { ...query, page: this.pageCount }
                         });
                     } else {
                         next();

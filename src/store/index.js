@@ -33,54 +33,54 @@ export default new Vuex.Store({
         pageSize: 10,
         availablePageSizes: [0, 10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         fields: {
-            'id': { 'name': 'ID', 'shown': true },
-            'title': { 'name': 'Title', 'shown': true },
-            'original_title': { 'name': 'Original title', 'shown': true },
-            'release_date': { 'name': 'Release date', 'shown': true, 'sortable': true },
-            'status': { 'name': 'Status', 'shown': true, 'sortable': true },
-            'production_countries': { 'name': 'Countries', 'shown': true },
-            'tagline': { 'name': 'Tagline', 'shown': true },
-            'genres': { 'name': 'Genres', 'shown': true },
-            'budget': { 'name': 'Budget', 'shown': true, 'sortable': true },
-            'revenue': { 'name': 'Revenue', 'shown': true, 'sortable': true },
-            'adult': { 'name': 'Adult', 'shown': true },
-            'belongs_to_collection': { 'name': 'Collection', 'shown': true },
-            'homepage': { 'name': 'Homepage', 'shown': true },
-            'imdb_id': { 'name': 'IMDB', 'shown': true, 'sortable': true },
-            'original_language': { 'name': 'Original language', 'shown': true, 'sortable': true },
-            'spoken_languages': { 'name': 'Language', 'shown': true },
-            'overview': { 'name': 'Overview', 'shown': true },
-            'production_companies': { 'name': 'Production Co', 'shown': true },
-            'runtime': { 'name': 'Runtime', 'shown': true, 'sortable': true },
-            'popularity': { 'name': 'Popularity', 'shown': true, 'sortable': true },
-            'vote_average': { 'name': 'Vote average', 'shown': true, 'sortable': true },
-            'vote_count': { 'name': 'Vote count', 'shown': true, 'sortable': true }
+            id: { name: 'ID', shown: true },
+            title: { name: 'Title', shown: true },
+            original_title: { name: 'Original title', shown: true },
+            release_date: { name: 'Release date', shown: true, sortable: true },
+            status: { name: 'Status', shown: true, sortable: true },
+            production_countries: { name: 'Countries', shown: true },
+            tagline: { name: 'Tagline', shown: true },
+            genres: { name: 'Genres', shown: true },
+            budget: { name: 'Budget', shown: true, sortable: true },
+            revenue: { name: 'Revenue', shown: true, sortable: true },
+            adult: { name: 'Adult', shown: true },
+            belongs_to_collection: { name: 'Collection', shown: true },
+            homepage: { name: 'Homepage', shown: true },
+            imdb_id: { name: 'IMDB', shown: true, sortable: true },
+            original_language: { name: 'Original language', shown: true, sortable: true },
+            spoken_languages: { name: 'Language', shown: true },
+            overview: { name: 'Overview', shown: true },
+            production_companies: { name: 'Production Co', shown: true },
+            runtime: { name: 'Runtime', shown: true, sortable: true },
+            popularity: { name: 'Popularity', shown: true, sortable: true },
+            vote_average: { name: 'Vote average', shown: true, sortable: true },
+            vote_count: { name: 'Vote count', shown: true, sortable: true }
         },
         sortField: null,
         sortOrder: 'asc',
         filters: {
-            'imdb_id': null,           //String - IMDB ID для поиска только одного фильма
-            'ids': null,               //Integer[]
-            'search': null,            //String
-            'adult': null,             //Boolean
-            'budget_min': null,        //Integer
-            'budget_max': null,        //Integer
-            'genres': null,            //String[]
-            'original_language': null, //String
-            'popularity_min': null,    //Float
-            'popularity_max': null,    //Float
-            'release_date_min': null,  //String - дата в формате YYYY-MM-DD
-            'release_date_max': null,  //String - дата в формате YYYY-MM-DD
-            'revenue_min': null,       //Integer
-            'revenue_max': null,       //Integer
-            'runtime_min': null,       //Float
-            'runtime_max': null,       //Float
-            'spoken_languages': null,  //String[]
-            'status': null,            //String - статус выхода фильма
-            'vote_average_min': null,  //Float
-            'vote_average_max': null,  //Float
-            'vote_count_min': null,    //Integer
-            'vote_count_max': null     //Integer
+            imdb_id: null,           //String - IMDB ID для поиска только одного фильма
+            ids: [],                 //Integer[]
+            search: null,            //String
+            adult: null,             //Boolean
+            budget_min: null,        //Integer
+            budget_max: null,        //Integer
+            genres: [],              //String[]
+            original_language: null, //String
+            popularity_min: null,    //Float
+            popularity_max: null,    //Float
+            release_date_min: null,  //String - дата в формате YYYY-MM-DD
+            release_date_max: null,  //String - дата в формате YYYY-MM-DD
+            revenue_min: null,       //Integer
+            revenue_max: null,       //Integer
+            runtime_min: null,       //Float
+            runtime_max: null,       //Float
+            spoken_languages: [],    //String[]
+            status: null,            //String - статус выхода фильма
+            vote_average_min: null,  //Float
+            vote_average_max: null,  //Float
+            vote_count_min: null,    //Integer
+            vote_count_max: null     //Integer
         },
         dataSize: 0,
         movies: [],
@@ -220,8 +220,8 @@ export default new Vuex.Store({
 
             return axios.post('http://185.185.69.80:8082/list', {
                 ...query,
-                'page': (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
-                'page_size': query.page_size ? query.page_size : state.pageSize //чтобы случайно не загрузить всю базу
+                page: (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
+                page_size: query.page_size ? query.page_size : state.pageSize  //чтобы случайно не загрузить всю базу
             })
                 .then(response => {
                     console.log(response.data); //TODO удалить

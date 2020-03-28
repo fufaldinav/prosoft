@@ -7,12 +7,8 @@ Vue.use(Router);
 const router = new Router({
     mode: 'history',
     routes: [
-        {
-            path: '/',
-            name: 'table',
-            component: AppTable
-        }
-    ]
+        { path: '/', name: 'table', component: AppTable },
+    ],
 });
 
 export default router;

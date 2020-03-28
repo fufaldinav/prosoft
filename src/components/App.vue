@@ -18,7 +18,7 @@
     export default {
         name: 'App',
 
-        components: { AppTable, AppPaginator }
+        components: { AppTable, AppPaginator },
     };
 </script>
 
