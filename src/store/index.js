@@ -54,7 +54,7 @@ export default new Vuex.Store({
             runtime: { name: 'Runtime', shown: true, sortable: true },
             popularity: { name: 'Popularity', shown: true, sortable: true },
             vote_average: { name: 'Vote average', shown: true, sortable: true },
-            vote_count: { name: 'Vote count', shown: true, sortable: true }
+            vote_count: { name: 'Vote count', shown: true, sortable: true },
         },
         sortField: null,
         sortOrder: 'asc',
@@ -80,7 +80,7 @@ export default new Vuex.Store({
             vote_average_min: null,  //Float
             vote_average_max: null,  //Float
             vote_count_min: null,    //Integer
-            vote_count_max: null     //Integer
+            vote_count_max: null,     //Integer
         },
         dataSize: 0,
         movies: [],
@@ -89,7 +89,7 @@ export default new Vuex.Store({
         countries: [],
         genres: [],
         languages: [],
-        statuses: []
+        statuses: [],
     },
 
     getters: {
@@ -149,7 +149,7 @@ export default new Vuex.Store({
                 if (a > b) return 1;
                 return 0;
             });
-        }
+        },
     },
 
     mutations: {
@@ -211,7 +211,7 @@ export default new Vuex.Store({
 
         addStatus(state, status) {
             state.statuses.push(status);
-        }
+        },
     },
 
     actions: {
@@ -305,8 +305,8 @@ export default new Vuex.Store({
                 .finally(() => {
                     commit('setLoading', false);
                 });
-        }
+        },
     },
 
-    modules: {}
+    modules: {},
 });
