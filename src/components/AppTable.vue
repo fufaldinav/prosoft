@@ -60,7 +60,7 @@
                 return this.$store.state.sortOrder.current;
             },
 
-            availableSortOrder() {
+            availableSortOrders() {
                 return this.$store.state.sortOrder.available;
             },
 
@@ -84,7 +84,7 @@
                 return this.$store.getters.getDisplayedFields;
             },
 
-            sortableFields() {
+            availableSortFields() {
                 return this.$store.getters.getSortableFields;
             },
         },
@@ -92,14 +92,6 @@
         methods: {
             getRowNumber(n) {
                 return n + 1 + (this.currentPageNumber - 1) * this.pageSize;
-            },
-
-            isInteger(n) {
-                return n === Number(n) && n % 1 !== 0;
-            },
-
-            isFloat(n) {
-                return n === Number(n) && n % 1 !== 0;
             },
 
             checkQuery(query) {
@@ -119,8 +111,8 @@
                     this.$store.commit('setPageSize', pageSize);
                 }
 
-                let sortField = query.sort_field ? query.sort_field : null;
-                if (typeof sortField === 'string' && sortField.length > 0 && this.sortableFields.indexOf(sortField) === -1) {
+                let sortField = query.sort_field || null;
+                if (typeof sortField === 'string' && sortField.length > 0 && this.availableSortFields.indexOf(sortField) === -1) {
                     sortField = null;
                 }
                 if (sortField !== this.sortField) {
@@ -131,15 +123,15 @@
                     }
                 }
 
-                let sortOrder = query.sort_order ? query.sort_order : null;
-                if (this.availableSortOrder.indexOf(sortOrder) === -1) {
+                let sortOrder = query.sort_order || null;
+                if (this.availableSortOrders.indexOf(sortOrder) === -1) {
                     sortOrder = null;
                 }
                 if (sortOrder !== this.currentSortOrder) {
                     this.$store.commit('setCurrentSortOrder', sortOrder);
                 }
 
-                let imdbId = query.imdb_id ? query.imdb_id : null;
+                let imdbId = query.imdb_id || null;
                 if (imdbId !== this.filters.imdb_id) {
                     this.$store.commit('setFilter', { filter: 'imdb_id', value: imdbId });
                 }
@@ -147,23 +139,34 @@
                 let ids = query.ids ? (Array.isArray(query.ids) ? query.ids : [query.ids]) : [];
                 for (let id of ids) {
                     id = parseInt(id, 10);
-                    if (this.isInteger(id) && this.filters.ids.indexOf(id) === -1) {
+                    if (! isNaN(id) && this.filters.ids.indexOf(id) === -1) {
                         this.$store.commit('addIdToFilter', id);
                     }
                 }
 
-                let search = query.search ? query.search : null;
+                let search = query.search || null;
                 if (search !== this.filters.search) {
                     this.$store.commit('setFilter', { filter: 'search', value: search });
                 }
 
-                let adult = typeof query.adult === 'boolean' ? query.adult : null;
+                let adult = query.adult;
+                if (typeof adult === 'string') {
+                    if (adult === 'true') {
+                        adult = true;
+                    } else if (adult === 'false') {
+                        adult = false;
+                    } else {
+                        adult = null;
+                    }
+                } else if (adult === undefined) {
+                    adult = null;
+                }
                 if (adult !== this.filters.adult) {
                     this.$store.commit('setFilter', { filter: 'adult', value: adult });
                 }
 
                 let budgetMin = query.budget_min ? parseInt(query.budget_min, 10) : NaN;
-                if (isNaN(budgetMin) || budgetMin < this.filtersMinMax.budget_min || budgetMin >= this.filtersMinMax.budget_max) {
+                if (isNaN(budgetMin) || budgetMin < this.filtersMinMax.budget_min || budgetMin > this.filtersMinMax.budget_max) {
                     budgetMin = null;
                 }
                 if (budgetMin !== this.filters.budget_min) {
@@ -171,7 +174,7 @@
                 }
 
                 let budgetMax = query.budget_max ? parseInt(query.budget_max, 10) : NaN;
-                if (isNaN(budgetMax) || budgetMax <= this.filtersMinMax.budget_min || budgetMax > this.filtersMinMax.budget_max) {
+                if (isNaN(budgetMax) || budgetMax < this.filtersMinMax.budget_min || budgetMax > this.filtersMinMax.budget_max || (budgetMin !== null && budgetMax < budgetMin)) {
                     budgetMax = null;
                 }
                 if (budgetMax !== this.filters.budget_max) {
@@ -187,7 +190,7 @@
                 }
 
                 let popularityMin = query.popularity_min ? parseFloat(query.popularity_min) : NaN;
-                if (isNaN(popularityMin) || isFinite(popularityMin) || popularityMin < this.filtersMinMax.popularity_min || popularityMin >= this.filtersMinMax.popularity_max) {
+                if (! isFinite(popularityMin) || popularityMin < this.filtersMinMax.popularity_min || popularityMin > this.filtersMinMax.popularity_max) {
                     popularityMin = null;
                 }
                 if (popularityMin !== this.filters.popularity_min) {
@@ -195,7 +198,7 @@
                 }
 
                 let popularityMax = query.popularity_max ? parseFloat(query.popularity_max) : NaN;
-                if (isNaN(popularityMax) || isFinite(popularityMax) || popularityMax <= this.filtersMinMax.popularity_min || popularityMax > this.filtersMinMax.popularity_max) {
+                if (! isFinite(popularityMax) || popularityMax < this.filtersMinMax.popularity_min || popularityMax > this.filtersMinMax.popularity_max || (popularityMin !== null && popularityMax < popularityMin)) {
                     popularityMax = null;
                 }
                 if (popularityMax !== this.filters.popularity_max) {
@@ -206,9 +209,9 @@
                 let dateMax = Date.parse(this.filtersMinMax.release_date_max);
 
                 let releaseDateMin = query.release_date_min ? Date.parse(query.release_date_min) : NaN;
-                if (isNaN(releaseDateMin) || releaseDateMin < dateMin || releaseDateMin >= dateMax) {
+                if (isNaN(releaseDateMin) || releaseDateMin < dateMin || releaseDateMin > dateMax) {
                     releaseDateMin = null;
-                } else if (this.isInteger(releaseDateMin)) {
+                } else {
                     let date = new Date(releaseDateMin);
                     releaseDateMin = date.toISOString().slice(0, 10);
                 }
@@ -217,9 +220,9 @@
                 }
 
                 let releaseDateMax = query.release_date_max ? Date.parse(query.release_date_max) : NaN;
-                if (isNaN(releaseDateMax) || releaseDateMax <= dateMin || releaseDateMax > dateMax) {
+                if (isNaN(releaseDateMax) || releaseDateMax < dateMin || releaseDateMax > dateMax) {
                     releaseDateMax = null;
-                } else if (this.isInteger(releaseDateMax)) {
+                } else {
                     let date = new Date(releaseDateMax);
                     releaseDateMax = date.toISOString().slice(0, 10);
                 }
@@ -228,7 +231,7 @@
                 }
 
                 let revenueMin = query.revenue_min ? parseInt(query.revenue_min) : NaN;
-                if (isNaN(revenueMin) || revenueMin < this.filtersMinMax.revenue_min || revenueMin >= this.filtersMinMax.revenue_max) {
+                if (isNaN(revenueMin) || revenueMin < this.filtersMinMax.revenue_min || revenueMin > this.filtersMinMax.revenue_max) {
                     revenueMin = null;
                 }
                 if (revenueMin !== this.filters.revenue_min) {
@@ -236,7 +239,7 @@
                 }
 
                 let revenueMax = query.revenue_max ? parseInt(query.revenue_max) : NaN;
-                if (isNaN(revenueMax) || revenueMax <= this.filtersMinMax.revenue_min || revenueMax > this.filtersMinMax.revenue_max) {
+                if (isNaN(revenueMax) || revenueMax < this.filtersMinMax.revenue_min || revenueMax > this.filtersMinMax.revenue_max || (revenueMin !== null && revenueMax < revenueMin)) {
                     revenueMax = null;
                 }
                 if (revenueMax !== this.filters.revenue_max) {
@@ -244,7 +247,7 @@
                 }
 
                 let runtimeMin = query.runtime_min ? parseFloat(query.runtime_min) : NaN;
-                if (isNaN(runtimeMin) || isFinite(runtimeMin) || runtimeMin < this.filtersMinMax.runtime_min || runtimeMin >= this.filtersMinMax.runtime_max) {
+                if (! isFinite(runtimeMin) || runtimeMin < this.filtersMinMax.runtime_min || runtimeMin > this.filtersMinMax.runtime_max) {
                     runtimeMin = null;
                 }
                 if (runtimeMin !== this.filters.runtime_min) {
@@ -252,7 +255,7 @@
                 }
 
                 let runtimeMax = query.runtime_max ? parseFloat(query.runtime_max) : NaN;
-                if (isNaN(runtimeMax) || isFinite(runtimeMax) || runtimeMax <= this.filtersMinMax.runtime_min || runtimeMax > this.filtersMinMax.runtime_max) {
+                if (! isFinite(runtimeMax) || runtimeMax < this.filtersMinMax.runtime_min || runtimeMax > this.filtersMinMax.runtime_max || (runtimeMin !== null && runtimeMax < runtimeMin)) {
                     runtimeMax = null;
                 }
                 if (runtimeMax !== this.filters.runtime_max) {
@@ -268,7 +271,7 @@
                 }
 
                 let voteAverageMin = query.vote_average_min ? parseFloat(query.vote_average_min) : NaN;
-                if (isNaN(voteAverageMin) || isFinite(voteAverageMin) || voteAverageMin < this.filtersMinMax.vote_average_min || voteAverageMin >= this.filtersMinMax.vote_average_max) {
+                if (! isFinite(voteAverageMin) || voteAverageMin < this.filtersMinMax.vote_average_min || voteAverageMin > this.filtersMinMax.vote_average_max) {
                     voteAverageMin = null;
                 }
                 if (voteAverageMin !== this.filters.vote_average_min) {
@@ -276,7 +279,7 @@
                 }
 
                 let voteAverageMax = query.vote_average_max ? parseFloat(query.vote_average_max) : NaN;
-                if (isNaN(voteAverageMax) || isFinite(voteAverageMax) || voteAverageMax <= this.filtersMinMax.vote_average_min || voteAverageMax > this.filtersMinMax.vote_average_max) {
+                if (! isFinite(voteAverageMax) || voteAverageMax < this.filtersMinMax.vote_average_min || voteAverageMax > this.filtersMinMax.vote_average_max || (voteAverageMin !== null && voteAverageMax < voteAverageMin)) {
                     voteAverageMax = null;
                 }
                 if (voteAverageMax !== this.filters.vote_average_max) {
@@ -284,7 +287,7 @@
                 }
 
                 let voteCountMin = query.vote_count_min ? parseInt(query.vote_count_min, 10) : NaN;
-                if (isNaN(voteCountMin) || voteCountMin < this.filtersMinMax.vote_count_min || voteCountMin >= this.filtersMinMax.vote_count_max) {
+                if (isNaN(voteCountMin) || voteCountMin < this.filtersMinMax.vote_count_min || voteCountMin > this.filtersMinMax.vote_count_max) {
                     voteCountMin = null;
                 }
                 if (voteCountMin !== this.filters.vote_count_min) {
@@ -292,7 +295,7 @@
                 }
 
                 let voteCountMax = query.vote_count_max ? parseInt(query.vote_count_max, 10) : NaN;
-                if (isNaN(voteCountMax) || voteCountMax <= this.filtersMinMax.vote_count_min || voteCountMax > this.filtersMinMax.vote_count_max) {
+                if (isNaN(voteCountMax) || voteCountMax < this.filtersMinMax.vote_count_min || voteCountMax > this.filtersMinMax.vote_count_max || (voteCountMin !== null && voteCountMax < voteCountMin)) {
                     voteCountMax = null;
                 }
                 if (voteCountMax !== this.filters.vote_count_max) {
@@ -308,24 +311,24 @@
                     imdb_id: imdbId || undefined,
                     ids: this.filters.ids.length > 0 ? this.filters.ids : undefined,
                     search: search || undefined,
-                    adult: typeof adult === 'boolean' || undefined,
-                    budget_min: this.isInteger(budgetMin) ? budgetMin : undefined,
-                    budget_max: this.isInteger(budgetMax) ? budgetMax : undefined,
+                    adult: typeof adult === 'boolean' ? adult : undefined,
+                    budget_min: typeof budgetMin === 'number' ? budgetMin : undefined,
+                    budget_max: typeof budgetMax === 'number' ? budgetMax : undefined,
                     genres: genres.length > 0 ? genres : undefined,
-                    popularity_min: this.isFloat(popularityMin) ? popularityMin : undefined,
-                    popularity_max: this.isFloat(popularityMax) ? popularityMax : undefined,
+                    popularity_min: typeof popularityMin === 'number' ? popularityMin : undefined,
+                    popularity_max: typeof popularityMax === 'number' ? popularityMax : undefined,
                     release_date_min: releaseDateMin || undefined,
                     release_date_max: releaseDateMax || undefined,
-                    revenue_min: revenueMin || undefined,
-                    revenue_max: revenueMax || undefined,
-                    runtime_min: this.isFloat(runtimeMin) ? runtimeMin : undefined,
-                    runtime_max: this.isFloat(runtimeMax) ? runtimeMax : undefined,
+                    revenue_min: typeof revenueMin === 'number' ? revenueMin : undefined,
+                    revenue_max: typeof revenueMax === 'number' ? revenueMax : undefined,
+                    runtime_min: typeof runtimeMin === 'number' ? runtimeMin : undefined,
+                    runtime_max: typeof runtimeMax === 'number' ? runtimeMax : undefined,
                     spoken_languages: spokenLanguages.length > 0 ? spokenLanguages : undefined,
                     status: status || undefined,
-                    vote_average_min: this.isFloat(voteAverageMin) ? voteAverageMin : undefined,
-                    vote_average_max: this.isFloat(voteAverageMax) ? voteAverageMax : undefined,
-                    vote_count_min: this.isInteger(voteCountMin) ? voteCountMin : undefined,
-                    vote_count_max: this.isInteger(voteCountMax) ? voteCountMax : undefined,
+                    vote_average_min: typeof voteAverageMin === 'number' ? voteAverageMin : undefined,
+                    vote_average_max: typeof voteAverageMax === 'number' ? voteAverageMax : undefined,
+                    vote_count_min: typeof voteCountMin === 'number' ? voteCountMin : undefined,
+                    vote_count_max: typeof voteCountMax === 'number' ? voteCountMax : undefined,
                 };
             },
         },
