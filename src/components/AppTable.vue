@@ -1,43 +1,58 @@
 <template>
-    <table class="table table-bordered table-striped table-sm table-responsive">
-        <thead class="thead-light">
-        <tr>
-            <th id="number" scope="col">
-                #
-            </th>
-            <th
-                v-for="field in displayedFields"
-                :key="`field_${field}`"
-                :id="field"
-                scope="col"
-            >
-                {{ fields[field].name }}
-                <a
-                    v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
-                    :class="{ 'text-dark': (field !== sortField) }"
-                    href="#"
-                    @click.prevent="sortTable(field)"
-                >
-                    <fa :icon="drawSortIcon(field)"/>
-                </a>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <app-movie
-            v-for="(movie, n) in movies"
-            :key="`app_movie_${movie.id}`"
-            :number="getRowNumber(n)"
-            :movie="movie"
+    <div class="h-100">
+        <div
+            v-if="loading"
+            class="d-flex flex-row align-items-center h-100"
         >
-        </app-movie>
-        </tbody>
-    </table>
+            <div class="container">
+                <div class="justify-content-center text-center">
+                    <fa :icon="syncIcon" size="4x" spin/>
+                </div>
+            </div>
+        </div>
+        <table
+            v-else
+            class="table table-bordered table-striped table-sm table-responsive"
+        >
+            <thead class="thead-light">
+            <tr>
+                <th id="number" scope="col">
+                    #
+                </th>
+                <th
+                    v-for="field in displayedFields"
+                    :key="`field_${field}`"
+                    :id="field"
+                    scope="col"
+                >
+                    {{ fields[field].name }}
+                    <a
+                        v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
+                        :class="{ 'text-dark': (field !== sortField) }"
+                        href="#"
+                        @click.prevent="sortTable(field)"
+                    >
+                        <fa :icon="drawSortIcon(field)"/>
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <app-movie
+                v-for="(movie, n) in movies"
+                :key="`app_movie_${movie.id}`"
+                :number="getRowNumber(n)"
+                :movie="movie"
+            >
+            </app-movie>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
     import AppMovie from './AppMovie';
-    import {faSort, faSortAmountDown, faSortAmountUp} from '@fortawesome/free-solid-svg-icons';
+    import {faSort, faSortAmountDown, faSortAmountUp, faSync} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'AppTable',
@@ -45,6 +60,14 @@
         components: { AppMovie },
 
         computed: {
+            loading() {
+                return this.$store.state.loading;
+            },
+
+            syncIcon() {
+                return faSync;
+            },
+
             currentPageNumber() {
                 return this.$store.state.currentPageNumber;
             },
