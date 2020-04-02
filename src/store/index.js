@@ -114,7 +114,11 @@ export default new Vuex.Store({
         },
 
         getDisplayedFields: state => {
-            return Object.keys(state.fields).filter(key => state.fields[key].shown);
+            return Object.keys(state.fields).filter(key => state.fields[key].shown === true);
+        },
+
+        getHiddenFields: state => {
+            return Object.keys(state.fields).filter(key => state.fields[key].shown === false);
         },
 
         getSortableFields: state => {
@@ -209,6 +213,18 @@ export default new Vuex.Store({
 
         setPageSize(state, size) {
             state.pageSize = size;
+        },
+
+        showField(state, fieldName) {
+            if (state.fields.hasOwnProperty(fieldName)) {
+                state.fields[fieldName].shown = true;
+            }
+        },
+
+        hideField(state, fieldName) {
+            if (state.fields.hasOwnProperty(fieldName)) {
+                state.fields[fieldName].shown = false;
+            }
         },
 
         setSortField(state, field) {

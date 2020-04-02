@@ -34,6 +34,13 @@
                     >
                         <fa :icon="drawSortIcon(field)"/>
                     </a>
+                    <a
+                        class="text-dark"
+                        href="#"
+                        @click.prevent="hideField(field)"
+                    >
+                        <fa :icon="eyeSlashIcon"/>
+                    </a>
                 </th>
             </tr>
             </thead>
@@ -52,7 +59,7 @@
 
 <script>
     import AppMovie from './AppMovie';
-    import {faSort, faSortAmountDown, faSortAmountUp, faSync} from '@fortawesome/free-solid-svg-icons';
+    import {faSort, faSortAmountDown, faSortAmountUp, faSync, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'AppTable',
@@ -66,6 +73,10 @@
 
             syncIcon() {
                 return faSync;
+            },
+
+            eyeSlashIcon() {
+                return faEyeSlash;
             },
 
             currentPageNumber() {
@@ -141,6 +152,10 @@
                         query: { ...this.$route.query, sort_field: fieldName, sort_order: 'asc' },
                     });
                 }
+            },
+
+            hideField(fieldName) {
+                this.$store.commit('hideField', fieldName);
             },
         },
 
