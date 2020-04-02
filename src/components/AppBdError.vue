@@ -5,7 +5,7 @@
                 <div class="col-md-12 text-center">
                     <span class="display-1 d-block">Error</span>
                     <div class="mb-4 lead">Something was wrong. Try to reset filters or check your link.</div>
-                    <router-link to="/?page=1&page_size=10">Reset filters</router-link>
+                    <router-link to="/">Reset filters and go back</router-link>
                 </div>
             </div>
         </div>
@@ -15,6 +15,14 @@
 <script>
     export default {
         name: 'AppBdError',
+
+        beforeRouteEnter(to, from, next) {
+            if (from.name !== 'table') {
+                next('/');
+            } else {
+                next();
+            }
+        },
     };
 </script>
 

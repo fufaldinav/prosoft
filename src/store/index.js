@@ -169,6 +169,36 @@ export default new Vuex.Store({
                 return 0;
             });
         },
+
+        getQuery: state => {
+            return {
+                page: state.currentPageNumber,
+                page_size: state.pageSize,
+                sort_field: state.sortField || undefined,
+                sort_order: (state.sortField && state.sortOrder.current !== null) ? state.sortOrder.current : undefined,
+                imdb_id: state.filters.imdb_id || undefined,
+                ids: state.filters.ids.length > 0 ? state.filters.ids : undefined,
+                search: state.filters.search || undefined,
+                adult: typeof state.filters.adult === 'boolean' ? state.filters.adult : undefined,
+                budget_min: typeof state.filters.budget_min === 'number' ? state.filters.budget_min : undefined,
+                budget_max: typeof state.filters.budget_max === 'number' ? state.filters.budget_max : undefined,
+                genres: state.filters.genres.length > 0 ? state.filters.genres : undefined,
+                popularity_min: typeof state.filters.popularity_min === 'number' ? state.filters.popularity_min : undefined,
+                popularity_max: typeof state.filters.popularity_max === 'number' ? state.filters.popularity_max : undefined,
+                release_date_min: state.filters.popularity_min || undefined,
+                release_date_max: state.filters.popularity_max || undefined,
+                revenue_min: typeof state.filters.revenue_min === 'number' ? state.filters.revenue_min : undefined,
+                revenue_max: typeof state.filters.revenue_max === 'number' ? state.filters.revenue_max : undefined,
+                runtime_min: typeof state.filters.runtime_min === 'number' ? state.filters.runtime_min : undefined,
+                runtime_max: typeof state.filters.runtime_max === 'number' ? state.filters.runtime_max : undefined,
+                spoken_languages: state.filters.spoken_languages.length > 0 ? state.filters.spoken_languages : undefined,
+                status: state.filters.status || undefined,
+                vote_average_min: typeof state.filters.vote_average_min === 'number' ? state.filters.vote_average_min : undefined,
+                vote_average_max: typeof state.filters.vote_average_max === 'number' ? state.filters.vote_average_max : undefined,
+                vote_count_min: typeof state.filters.vote_count_min === 'number' ? state.filters.vote_count_min : undefined,
+                vote_count_max: typeof state.filters.vote_count_max === 'number' ? state.filters.vote_count_max : undefined,
+            };
+        },
     },
 
     mutations: {
@@ -279,98 +309,312 @@ export default new Vuex.Store({
     },
 
     actions: {
-        async loadMovies({ commit, state }, query = {}) {
-            commit('setLoading', true);
+        parseQuery({ commit, state, getters }, query = {}) {
+            let pageNumber = query.page ? parseInt(query.page, 10) : state.currentPageNumber;
+            if (isNaN(pageNumber) || pageNumber < 1) {
+                pageNumber = state.currentPageNumber;
+            }
+            if (pageNumber !== state.currentPageNumber) {
+                commit('setCurrentPageNumber', pageNumber);
+            }
 
-            return axios.post('http://185.185.69.80:8082/list', {
-                ...query,
-                page: (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
-                page_size: query.page_size ? query.page_size : state.pageSize  //чтобы случайно не загрузить всю базу
-            })
-                .then(response => {
-                    console.log(response.data); //TODO удалить
+            let pageSize = query.page_size ? parseInt(query.page_size, 10) : state.pageSize;
+            if (isNaN(pageSize) || state.availablePageSizes.indexOf(pageSize) === -1) {
+                pageSize = state.pageSize;
+            }
+            if (pageSize !== state.pageSize) {
+                commit('setPageSize', pageSize);
+            }
 
-                    let responseData = response.data;
+            let sortField = query.sort_field || null;
+            if (typeof sortField === 'string' && sortField.length > 0 && getters.getSortableFields.indexOf(sortField) === -1) {
+                sortField = null;
+            }
+            if (sortField !== state.sortField) {
+                if (sortField === null) {
+                    commit('clearSortField');
+                } else {
+                    commit('setSortField', sortField);
+                }
+            }
 
-                    if (! 'ok' in responseData || responseData.ok !== true) {
-                        throw new Error('response is not ok =((');
-                    }
+            let sortOrder = query.sort_order || null;
+            if (state.sortOrder.available.indexOf(sortOrder) === -1) {
+                sortOrder = null;
+            }
+            if (sortOrder !== state.sortOrder.current) {
+                commit('setCurrentSortOrder', sortOrder);
+            }
 
-                    const dataSize = responseData.data_size ? responseData.data_size : 0;
-                    const movies = responseData.data ? responseData.data : [];
+            let imdbId = query.imdb_id || null;
+            if (imdbId !== state.filters.imdb_id) {
+                commit('setFilter', { filter: 'imdb_id', value: imdbId });
+            }
 
-                    if (dataSize === 0) {
-                        throw new Error('no data returned');
-                    }
+            let ids = query.ids ? (Array.isArray(query.ids) ? query.ids : [query.ids]) : [];
+            for (let id of ids) {
+                id = parseInt(id, 10);
+                if (! isNaN(id) && state.filters.ids.indexOf(id) === -1) {
+                    commit('addIdToFilter', id);
+                }
+            }
 
-                    if (dataSize !== state.dataSize) {
-                        commit('setDataSize', dataSize);
-                    }
+            let search = query.search || null;
+            if (search !== state.filters.search) {
+                commit('setFilter', { filter: 'search', value: search });
+            }
 
-                    if (movies.length === 0) {
-                        return dataSize;
-                    }
+            let adult = query.adult;
+            if (typeof adult === 'string') {
+                if (adult === 'true') {
+                    adult = true;
+                } else if (adult === 'false') {
+                    adult = false;
+                } else {
+                    adult = null;
+                }
+            } else if (adult === undefined) {
+                adult = null;
+            }
+            if (adult !== state.filters.adult) {
+                commit('setFilter', { filter: 'adult', value: adult });
+            }
 
-                    if (state.movies.length > 0) {
-                        commit('clearMovies');
-                    }
+            let budgetMin = query.budget_min ? parseInt(query.budget_min, 10) : NaN;
+            if (isNaN(budgetMin) || budgetMin < state.filtersMinMax.budget_min || budgetMin > state.filtersMinMax.budget_max) {
+                budgetMin = null;
+            }
+            if (budgetMin !== state.filters.budget_min) {
+                commit('setFilter', { filter: 'budget_min', value: budgetMin });
+            }
 
-                    for (let movie of movies) {
-                        if (movie.belongs_to_collection !== null) {
-                            if (state.collections.find(e => e.id === movie.belongs_to_collection.id) === undefined) {
-                                commit('addCollection', movie.belongs_to_collection);
-                            }
-                        }
+            let budgetMax = query.budget_max ? parseInt(query.budget_max, 10) : NaN;
+            if (isNaN(budgetMax) || budgetMax < state.filtersMinMax.budget_min || budgetMax > state.filtersMinMax.budget_max || (budgetMin !== null && budgetMax < budgetMin)) {
+                budgetMax = null;
+            }
+            if (budgetMax !== state.filters.budget_max) {
+                commit('setFilter', { filter: 'budget_max', value: budgetMax });
+            }
 
-                        if (movie.production_companies !== null) {
-                            for (let company of movie.production_companies) {
-                                if (state.companies.find(e => e.id === company.id) === undefined) {
-                                    commit('addCompany', company);
-                                }
-                            }
-                        }
+            let genres = query.genres ? (Array.isArray(query.genres) ? query.genres : [query.genres]) : [];
+            commit('setFilter', { filter: 'genres', value: genres });
 
-                        if (movie.production_countries !== null) {
-                            for (let country of movie.production_countries) {
-                                if (state.countries.find(e => e.iso_3166_1 === country.iso_3166_1) === undefined) {
-                                    commit('addCountry', country);
-                                }
-                            }
-                        }
+            let originalLanguage = query.original_language ? query.original_language : null;
+            if (originalLanguage !== state.filters.original_language) {
+                commit('setFilter', { filter: 'original_language', value: originalLanguage });
+            }
 
-                        if (movie.genres !== null) {
-                            for (let genre of movie.genres) {
-                                if (state.genres.find(e => e.id === genre.id) === undefined) {
-                                    commit('addGenre', genre);
-                                }
-                            }
-                        }
+            let popularityMin = query.popularity_min ? parseFloat(query.popularity_min) : NaN;
+            if (! isFinite(popularityMin) || popularityMin < state.filtersMinMax.popularity_min || popularityMin > state.filtersMinMax.popularity_max) {
+                popularityMin = null;
+            }
+            if (popularityMin !== state.filters.popularity_min) {
+                commit('setFilter', { filter: 'popularity_min', value: popularityMin });
+            }
 
-                        if (movie.spoken_languages !== null) {
-                            for (let language of movie.spoken_languages) {
-                                if (state.languages.find(e => e.iso_639_1 === language.iso_639_1) === undefined) {
-                                    commit('addLanguage', language);
-                                }
-                            }
-                        }
+            let popularityMax = query.popularity_max ? parseFloat(query.popularity_max) : NaN;
+            if (! isFinite(popularityMax) || popularityMax < state.filtersMinMax.popularity_min || popularityMax > state.filtersMinMax.popularity_max || (popularityMin !== null && popularityMax < popularityMin)) {
+                popularityMax = null;
+            }
+            if (popularityMax !== state.filters.popularity_max) {
+                commit('setFilter', { filter: 'popularity_max', value: popularityMax });
+            }
 
-                        if (state.statuses.indexOf(movie.status) === -1) {
-                            commit('addStatus', movie.status);
-                        }
+            let dateMin = Date.parse(state.filtersMinMax.release_date_min);
+            let dateMax = Date.parse(state.filtersMinMax.release_date_max);
 
-                        commit('addMovie', movie);
-                    }
+            let releaseDateMin = query.release_date_min ? Date.parse(query.release_date_min) : NaN;
+            if (isNaN(releaseDateMin) || releaseDateMin < dateMin || releaseDateMin > dateMax) {
+                releaseDateMin = null;
+            } else {
+                let date = new Date(releaseDateMin);
+                releaseDateMin = date.toISOString().slice(0, 10);
+            }
+            if (releaseDateMin !== state.filters.release_date_min) {
+                commit('setFilter', { filter: 'release_date_min', value: releaseDateMin });
+            }
 
-                    return dataSize;
-                })
-                .catch(error => {
-                    console.log(error); //TODO обработка ошибки загрузки
-                })
-                .finally(() => {
-                    commit('setLoading', false);
-                });
+            let releaseDateMax = query.release_date_max ? Date.parse(query.release_date_max) : NaN;
+            if (isNaN(releaseDateMax) || releaseDateMax < dateMin || releaseDateMax > dateMax) {
+                releaseDateMax = null;
+            } else {
+                let date = new Date(releaseDateMax);
+                releaseDateMax = date.toISOString().slice(0, 10);
+            }
+            if (releaseDateMax !== state.filters.release_date_max) {
+                commit('setFilter', { filter: 'release_date_max', value: releaseDateMax });
+            }
+
+            let revenueMin = query.revenue_min ? parseInt(query.revenue_min) : NaN;
+            if (isNaN(revenueMin) || revenueMin < state.filtersMinMax.revenue_min || revenueMin > state.filtersMinMax.revenue_max) {
+                revenueMin = null;
+            }
+            if (revenueMin !== state.filters.revenue_min) {
+                commit('setFilter', { filter: 'revenue_min', value: revenueMin });
+            }
+
+            let revenueMax = query.revenue_max ? parseInt(query.revenue_max) : NaN;
+            if (isNaN(revenueMax) || revenueMax < state.filtersMinMax.revenue_min || revenueMax > state.filtersMinMax.revenue_max || (revenueMin !== null && revenueMax < revenueMin)) {
+                revenueMax = null;
+            }
+            if (revenueMax !== state.filters.revenue_max) {
+                commit('setFilter', { filter: 'revenue_max', value: revenueMax });
+            }
+
+            let runtimeMin = query.runtime_min ? parseFloat(query.runtime_min) : NaN;
+            if (! isFinite(runtimeMin) || runtimeMin < state.filtersMinMax.runtime_min || runtimeMin > state.filtersMinMax.runtime_max) {
+                runtimeMin = null;
+            }
+            if (runtimeMin !== state.filters.runtime_min) {
+                commit('setFilter', { filter: 'runtime_min', value: runtimeMin });
+            }
+
+            let runtimeMax = query.runtime_max ? parseFloat(query.runtime_max) : NaN;
+            if (! isFinite(runtimeMax) || runtimeMax < state.filtersMinMax.runtime_min || runtimeMax > state.filtersMinMax.runtime_max || (runtimeMin !== null && runtimeMax < runtimeMin)) {
+                runtimeMax = null;
+            }
+            if (runtimeMax !== state.filters.runtime_max) {
+                commit('setFilter', { filter: 'runtime_max', value: runtimeMax });
+            }
+
+            let spokenLanguages = query.spoken_languages ? (Array.isArray(query.spoken_languages) ? query.spoken_languages : [query.spoken_languages]) : [];
+            commit('setFilter', { filter: 'spoken_languages', value: spokenLanguages });
+
+            let status = query.status ? query.status : null;
+            if (status !== state.filters.status) {
+                commit('setFilter', { filter: 'status', value: status });
+            }
+
+            let voteAverageMin = query.vote_average_min ? parseFloat(query.vote_average_min) : NaN;
+            if (! isFinite(voteAverageMin) || voteAverageMin < state.filtersMinMax.vote_average_min || voteAverageMin > state.filtersMinMax.vote_average_max) {
+                voteAverageMin = null;
+            }
+            if (voteAverageMin !== state.filters.vote_average_min) {
+                commit('setFilter', { filter: 'vote_average_min', value: voteAverageMin });
+            }
+
+            let voteAverageMax = query.vote_average_max ? parseFloat(query.vote_average_max) : NaN;
+            if (! isFinite(voteAverageMax) || voteAverageMax < state.filtersMinMax.vote_average_min || voteAverageMax > state.filtersMinMax.vote_average_max || (voteAverageMin !== null && voteAverageMax < voteAverageMin)) {
+                voteAverageMax = null;
+            }
+            if (voteAverageMax !== state.filters.vote_average_max) {
+                commit('setFilter', { filter: 'vote_average_max', value: voteAverageMax });
+            }
+
+            let voteCountMin = query.vote_count_min ? parseInt(query.vote_count_min, 10) : NaN;
+            if (isNaN(voteCountMin) || voteCountMin < state.filtersMinMax.vote_count_min || voteCountMin > state.filtersMinMax.vote_count_max) {
+                voteCountMin = null;
+            }
+            if (voteCountMin !== state.filters.vote_count_min) {
+                commit('setFilter', { filter: 'vote_count_min', value: voteCountMin });
+            }
+
+            let voteCountMax = query.vote_count_max ? parseInt(query.vote_count_max, 10) : NaN;
+            if (isNaN(voteCountMax) || voteCountMax < state.filtersMinMax.vote_count_min || voteCountMax > state.filtersMinMax.vote_count_max || (voteCountMin !== null && voteCountMax < voteCountMin)) {
+                voteCountMax = null;
+            }
+            if (voteCountMax !== state.filters.vote_count_max) {
+                commit('setFilter', { filter: 'vote_count_max', value: voteCountMax });
+            }
         },
+
+        loadMovies({ commit, state }, query = {}) {
+            return new Promise((resolve, reject) => {
+                commit('setLoading', true);
+
+                return axios.post('http://185.185.69.80:8082/list', {
+                    ...query,
+                    page: (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
+                    page_size: query.page_size ? query.page_size : state.pageSize,  //чтобы случайно не загрузить всю базу
+                })
+                    .then(response => {
+                        console.log(response.data); //TODO удалить
+
+                        let responseData = response.data;
+
+                        if (! 'ok' in responseData || responseData.ok !== true) {
+                            throw new Error('Response is not ok =((');
+                        }
+
+                        const dataSize = responseData.data_size ? responseData.data_size : 0;
+                        const movies = responseData.data ? responseData.data : [];
+
+                        if (dataSize === 0) {
+                            throw new Error('No data returned');
+                        }
+
+                        if (dataSize !== state.dataSize) {
+                            commit('setDataSize', dataSize);
+                        }
+
+                        if (movies.length === 0) {
+                            resolve(dataSize);
+                        }
+
+                        if (state.movies.length > 0) {
+                            commit('clearMovies');
+                        }
+
+                        for (let movie of movies) {
+                            if (movie.belongs_to_collection !== null) {
+                                if (state.collections.find(e => e.id === movie.belongs_to_collection.id) === undefined) {
+                                    commit('addCollection', movie.belongs_to_collection);
+                                }
+                            }
+
+                            if (movie.production_companies !== null) {
+                                for (let company of movie.production_companies) {
+                                    if (state.companies.find(e => e.id === company.id) === undefined) {
+                                        commit('addCompany', company);
+                                    }
+                                }
+                            }
+
+                            if (movie.production_countries !== null) {
+                                for (let country of movie.production_countries) {
+                                    if (state.countries.find(e => e.iso_3166_1 === country.iso_3166_1) === undefined) {
+                                        commit('addCountry', country);
+                                    }
+                                }
+                            }
+
+                            if (movie.genres !== null) {
+                                for (let genre of movie.genres) {
+                                    if (state.genres.find(e => e.id === genre.id) === undefined) {
+                                        commit('addGenre', genre);
+                                    }
+                                }
+                            }
+
+                            if (movie.spoken_languages !== null) {
+                                for (let language of movie.spoken_languages) {
+                                    if (state.languages.find(e => e.iso_639_1 === language.iso_639_1) === undefined) {
+                                        commit('addLanguage', language);
+                                    }
+                                }
+                            }
+
+                            if (state.statuses.indexOf(movie.status) === -1) {
+                                commit('addStatus', movie.status);
+                            }
+
+                            commit('addMovie', movie);
+                        }
+
+                        resolve(dataSize);
+                    })
+                    .catch(error => {
+                        reject(error); //TODO обработка ошибки загрузки
+                    })
+                    .finally(() => {
+                        commit('setLoading', false);
+                    });
+            });
+        }
+        ,
     },
 
-    modules: {},
-});
+    modules: {}
+    ,
+})
+;
