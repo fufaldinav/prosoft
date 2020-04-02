@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import AppBdError from '../components/AppBdError';
+import AppNotFound from '../components/AppNotFound';
 import AppTable from '../components/AppTable';
 
 Vue.use(Router);
@@ -8,6 +10,8 @@ const router = new Router({
     mode: 'history',
     routes: [
         { path: '/', name: 'table', component: AppTable },
+        { path: '/error', name: 'error', component: AppBdError },
+        { path: '*', name: '404', component: AppNotFound },
     ],
 });
 
