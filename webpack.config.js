@@ -7,36 +7,36 @@ module.exports = {
     mode: 'development',
 
     resolve: {
-        extensions: ['*', '.js', '.vue', '.json']
+        extensions: ['*', '.js', '.vue', '.json'],
     },
 
     entry: './src/main.js',
 
     output: {
         path: path.resolve(__dirname, './public'),
-        filename: './js/app.js'
+        filename: './js/app.js',
     },
 
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
             },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
             },
             {
                 test: /\.(sa|sc|c)ss$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
-                    'sass-loader'
+                    'sass-loader',
                 ],
-            }
-        ]
+            },
+        ],
     },
 
     plugins: [
@@ -45,11 +45,11 @@ module.exports = {
             {
                 host: 'localhost',
                 port: 3000,
-                proxy: 'http://prosoft.localhost/'
-            }
+                proxy: 'http://prosoft.localhost/',
+            },
         ),
         new MiniCssExtractPlugin({
-            filename: './stylesheets/main.css'
-        })
-    ]
+            filename: './stylesheets/main.css',
+        }),
+    ],
 };

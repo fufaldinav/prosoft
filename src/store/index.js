@@ -57,10 +57,7 @@ export default new Vuex.Store({
             vote_count: { name: 'Vote count', shown: true, sortable: true },
         },
         sortField: null,
-        sortOrder: {
-            current: null,
-            available: ['asc', 'desc'],
-        },
+        sortOrder: 'asc',
         filters: {
             imdb_id: null,           //String - IMDB ID для поиска только одного фильма
             ids: [],                 //Integer[]
@@ -175,7 +172,7 @@ export default new Vuex.Store({
                 page: state.currentPageNumber,
                 page_size: state.pageSize,
                 sort_field: state.sortField || undefined,
-                sort_order: (state.sortField && state.sortOrder.current !== null) ? state.sortOrder.current : undefined,
+                sort_order: state.sortField ? state.sortOrder : undefined,
                 imdb_id: state.filters.imdb_id || undefined,
                 ids: state.filters.ids.length > 0 ? state.filters.ids : undefined,
                 search: state.filters.search || undefined,
@@ -222,9 +219,9 @@ export default new Vuex.Store({
             state.sortField = null;
         },
 
-        setCurrentSortOrder(state, order) {
-            if (state.sortOrder.available.indexOf(order) > -1) {
-                state.sortOrder.current = order;
+        setSortOrder(state, order) {
+            if (order === 'asc' || order === 'desc') {
+                state.sortOrder = order;
             }
         },
 
@@ -339,11 +336,11 @@ export default new Vuex.Store({
             }
 
             let sortOrder = query.sort_order || null;
-            if (state.sortOrder.available.indexOf(sortOrder) === -1) {
-                sortOrder = null;
+            if (sortOrder !== 'asc' && sortOrder !== 'desc') {
+                sortOrder = 'asc';
             }
-            if (sortOrder !== state.sortOrder.current) {
-                commit('setCurrentSortOrder', sortOrder);
+            if (sortOrder !== state.sortOrder) {
+                commit('setSortOrder', sortOrder);
             }
 
             let imdbId = query.imdb_id || null;

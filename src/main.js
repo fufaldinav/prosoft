@@ -6,6 +6,9 @@ import router from './router';
 import 'bootstrap';
 import './sass/main.scss';
 
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+Vue.component('fa', FontAwesomeIcon);
+
 new Vue({
     store,
     router,

@@ -12,6 +12,14 @@
                 scope="col"
             >
                 {{ fields[field].name }}
+                <a
+                    v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
+                    :class="{ 'text-dark': (field !== sortField) }"
+                    href="#"
+                    @click.prevent="sortTable(field)"
+                >
+                    <fa :icon="drawSortIcon(field)"/>
+                </a>
             </th>
         </tr>
         </thead>
@@ -29,6 +37,7 @@
 
 <script>
     import AppMovie from './AppMovie';
+    import {faSort, faSortAmountDown, faSortAmountUp} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'AppTable',
@@ -46,6 +55,14 @@
 
             fields() {
                 return this.$store.state.fields;
+            },
+
+            sortField() {
+                return this.$store.state.sortField;
+            },
+
+            sortOrder() {
+                return this.$store.state.sortOrder;
             },
 
             movies() {
@@ -68,6 +85,39 @@
         methods: {
             getRowNumber(n) {
                 return n + 1 + (this.currentPageNumber - 1) * this.pageSize;
+            },
+
+            drawSortIcon(fieldName) {
+                if (fieldName === this.sortField) {
+                    if (this.sortOrder === 'desc') {
+                        return faSortAmountDown;
+                    } else {
+                        return faSortAmountUp;
+                    }
+                } else {
+                    return faSort;
+                }
+            },
+
+            sortTable(fieldName) {
+                if (fieldName === this.sortField) {
+                    if (this.sortOrder === 'desc') {
+                        this.$router.push({
+                            path: this.$route.path,
+                            query: { ...this.$route.query, sort_order: 'asc' },
+                        });
+                    } else {
+                        this.$router.push({
+                            path: this.$route.path,
+                            query: { ...this.$route.query, sort_order: 'desc' },
+                        });
+                    }
+                } else {
+                    this.$router.push({
+                        path: this.$route.path,
+                        query: { ...this.$route.query, sort_field: fieldName, sort_order: 'asc' },
+                    });
+                }
             },
         },
 
