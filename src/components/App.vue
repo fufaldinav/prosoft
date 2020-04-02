@@ -15,27 +15,51 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li
-                            v-if="hiddenFields.length > 0"
-                            class="nav-item dropdown"
-                        >
-                            <a class="nav-link dropdown-toggle" href="#" id="fieldsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <fa :icon="eyeSlashIcon"/>
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
+                                :class="hiddenFields.length === 0 ? 'text-secondary' : 'text-danger'"
+                                href="#"
+                                id="fieldsDropdown"
+                                role="button"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <fa
+                                    v-if="hiddenFields.length === 0"
+                                    :icon="eyeIcon"
+                                />
+                                <fa
+                                    v-else
+                                    :icon="eyeSlashIcon"
+                                />
                             </a>
                             <div class="dropdown-menu" aria-labelledby="fieldsDropdown">
-                                <span
-                                    v-for="field in hiddenFields"
-                                    :key="`hidden_field_${field}`"
-                                    class="dropdown-item"
+                                <a
+                                    v-for="(field, fieldName) in fields"
+                                    :key="`hidden_field_${fieldName}`"
+                                    class="dropdown-item d-flex"
+                                    href="#"
+                                    @click.prevent="toggleField(fieldName)"
                                 >
-                                    {{ fields[field].name }}
-                                    <a
-                                        href="#"
-                                        @click.prevent="showField(field)"
+                                    <span class="mr-auto">
+                                        {{ field.name }}
+                                    </span>
+                                    <span
+                                        class="ml-2"
+                                        :class="field.shown === true ? 'text-success' : 'text-danger'"
                                     >
-                                        <fa :icon="eyeIcon"/>
-                                    </a>
-                                </span>
+                                        <fa
+                                            v-if="field.shown === true"
+                                            :icon="eyeIcon"
+                                        />
+                                        <fa
+                                            v-else
+                                            :icon="eyeSlashIcon"
+                                        />
+                                    </span>
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a
                                     class="dropdown-item"
@@ -137,8 +161,12 @@
                 });
             },
 
-            showField(fieldName) {
-                this.$store.commit('showField', fieldName);
+            toggleField(fieldName) {
+                if (this.fields[fieldName].shown === true) {
+                    this.$store.commit('hideField', fieldName);
+                } else {
+                    this.$store.commit('showField', fieldName);
+                }
             },
 
             showAllFields() {

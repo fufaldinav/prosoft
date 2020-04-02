@@ -1,19 +1,25 @@
 <template>
-    <div class="h-100">
+    <div class="h-100 table-responsive">
         <div
             v-if="loading"
             class="d-flex flex-row align-items-center h-100"
         >
             <div class="container">
-                <div class="justify-content-center text-center">
+                <div class="justify-content-center text-center text-secondary">
                     <fa :icon="syncIcon" size="4x" spin/>
                 </div>
             </div>
         </div>
         <table
             v-else
-            class="table table-bordered table-striped table-sm table-responsive"
+            class="table table-bordered table-striped table-sm app-table"
         >
+            <col style="width: 4rem;"/>
+            <col
+                v-for="field in displayedFields"
+                :key="`col_${field}`"
+                :style="colWidth(field)"
+            />
             <thead class="thead-light">
             <tr>
                 <th id="number" scope="col">
@@ -23,24 +29,32 @@
                     v-for="field in displayedFields"
                     :key="`field_${field}`"
                     :id="field"
+                    class="app-table-th"
                     scope="col"
                 >
-                    {{ fields[field].name }}
-                    <a
-                        v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
-                        :class="{ 'text-dark': (field !== sortField) }"
-                        href="#"
-                        @click.prevent="sortTable(field)"
-                    >
-                        <fa :icon="drawSortIcon(field)"/>
-                    </a>
-                    <a
-                        class="text-dark"
-                        href="#"
-                        @click.prevent="hideField(field)"
-                    >
-                        <fa :icon="eyeSlashIcon"/>
-                    </a>
+                    <div class="clearfix">
+                        <span class="float-left">
+                            {{ fields[field].name }}
+                        </span>
+                        <span class="float-right">
+                            <a
+                                class="text-danger app-hide-field-icon"
+                                href="#"
+                                @click.prevent="hideField(field)"
+                            >
+                            <fa :icon="eyeSlashIcon"/>
+                        </a>
+                        <a
+                            v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
+                            class="text-dark app-sort-icon"
+                            :class="{ 'app-sort-icon-active': sortField === field }"
+                            href="#"
+                            @click.prevent="sortTable(field)"
+                        >
+                            <fa :icon="drawSortIcon(field)"/>
+                        </a>
+                        </span>
+                    </div>
                 </th>
             </tr>
             </thead>
@@ -156,6 +170,13 @@
 
             hideField(fieldName) {
                 this.$store.commit('hideField', fieldName);
+            },
+
+            colWidth(fieldName) {
+                const length = this.fields[fieldName].width || 10;
+                return {
+                    width: `${length}rem`,
+                };
             },
         },
 

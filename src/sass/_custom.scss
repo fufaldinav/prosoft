@@ -2,16 +2,7 @@ body {
   line-height: 1;
 }
 
-.table-responsive {
-  height: 100%;
-  margin: 0;
-}
-
-.app-header {
-  height: 3rem;
-}
-
-.app-navbar {
+.app-header, .app-navbar {
   height: 3rem;
 }
 
@@ -20,6 +11,41 @@ body {
   top: 3rem;
   height: calc(100vh - 3rem);
   overflow: auto;
+}
+
+.app-table {
+  table-layout: fixed;
+  font-size: 0.95rem;
+}
+
+.app-table-th:hover .app-hide-field-icon {
+  opacity: 1;
+}
+
+.app-table-cell1 {
+  height: 1.25rem;
+}
+
+.app-toggle-fields-menu-icon {
+  transition: color 1.5s;
+}
+
+.app-hide-field-icon {
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.app-sort-icon {
+  opacity: 0.5;
+  transition: opacity 0.25s;
+}
+
+.app-sort-icon-active {
+  opacity: 1;
+}
+
+.app-sort-icon:hover {
+  opacity: 1;
 }
 
 .app-paginator {
@@ -33,9 +59,4 @@ body {
 .app-paginator:hover {
   opacity: 1;
   transition: opacity 0.25s;
-}
-
-.app-table-cell {
-  height: 4rem;
-  overflow: hidden;
 }
