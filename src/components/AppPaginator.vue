@@ -2,11 +2,10 @@
     <ul
         v-if="pageCount > 0"
         class="pagination mb-0"
-        :class="{ disabled: loading }"
     >
         <li
             class="page-item"
-            :class="{ disabled: isFirstPage }"
+            :class="{ disabled: (isFirstPage || loading) }"
         >
             <span
                 v-if="isFirstPage"
@@ -27,7 +26,7 @@
             v-for="page in items"
             :key="`page_item_${page.label}`"
             class="page-item"
-            :class="{ active: page.active, disabled: page.disable }"
+            :class="{ active: page.active, disabled: (page.disable || loading) }"
         >
             <span
                 v-if="page.active"
@@ -56,7 +55,7 @@
         </li>
         <li
             class="page-item"
-            :class="{ disabled: isLastPage }"
+            :class="{ disabled: (isLastPage || loading) }"
         >
             <span
                 v-if="isLastPage"
@@ -83,7 +82,7 @@
 
         computed: {
             loading() {
-                return this.$store.getters.loading;
+                return this.$store.state.loading;
             },
 
             pageCount() {
