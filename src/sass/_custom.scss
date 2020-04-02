@@ -14,15 +14,21 @@ body {
 .app-body {
   position: sticky;
   top: 3rem;
-  height: calc(100vh - 6rem);
+  height: calc(100vh - 3rem);
   overflow: auto;
 }
 
-.app-footer {
-  overflow: hidden;
-  position: sticky;
-  bottom: 0;
-  height: 3rem;
+.app-paginator {
+  opacity: 0.5;
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  transition: opacity 0.5s 1s;
+}
+
+.app-paginator:hover {
+  opacity: 1;
+  transition: opacity 0.25s;
 }
 
 .app-table-cell {

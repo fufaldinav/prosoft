@@ -5,9 +5,7 @@
         <main class="container-fluid px-0 app-body">
             <RouterView/>
         </main>
-        <footer class="container-fluid px-0 app-footer">
-            <AppPaginator/>
-        </footer>
+        <AppPaginator/>
     </div>
 </template>
 

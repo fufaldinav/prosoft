@@ -1,84 +1,95 @@
 <template>
-    <ul
+    <div
         v-if="pageCount > 0"
-        class="pagination mb-0"
+        class="app-paginator btn-group mb-0 border rounded shadow"
+        role="group" aria-label="Pagination"
     >
-        <li
-            class="page-item"
-            :class="{ disabled: (isFirstPage || loading) }"
-        >
-            <span
-                v-if="isFirstPage"
-                class="page-link"
-                aria-hidden="true"
-            >
-                &laquo;
-            </span>
-            <button
-                v-else
-                class="page-link"
-                @click="prevPage"
-            >
-                <span aria-hidden="true">&laquo;</span>
+        <div class="btn-group dropup" role="group">
+            <button id="pageManualSelect" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Page
             </button>
-        </li>
-        <li
-            v-for="page in items"
-            :key="`page_item_${page.label}`"
-            class="page-item"
-            :class="{ active: page.active, disabled: (page.disable || loading) }"
+            <div class="dropdown-menu p-3" aria-labelledby="pageManualSelect">
+                <div class="form-group">
+                    <label for="pageNumberForm">Chose page:</label>
+                    <input
+                        id="pageNumberForm"
+                        type="number"
+                        class="form-control"
+                        v-model="pageInputFormData"
+                        min="1"
+                        :max="pageCount"
+                        :placeholder="currentPageNumber"
+                    >
+                </div>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    :disabled="pageInputFormData < 1 || pageInputFormData > pageCount"
+                    @click="changePage(pageInputFormData)"
+                >
+                    Let's go
+                </button>
+            </div>
+        </div>
+        <button
+            type="button"
+            class="btn btn-light"
+            :disabled="isFirstPage || loading"
+            @click="prevPage"
         >
-            <span
+            &laquo;
+        </button>
+        <template
+            v-for="page in items"
+        >
+            <button
                 v-if="page.active"
-                :key="`page_active_${page.label}`"
-                class="page-link"
-                aria-hidden="true"
+                :key="`page_item_${page.label}`"
+                type="button"
+                class="btn btn-primary"
+                :disabled="loading"
             >
                 {{ page.label }}
-            </span>
-            <span
+            </button>
+            <button
                 v-else-if="page.disable"
-                :key="`page_dots_${page.label}`"
-                class="page-link"
-                aria-hidden="true"
+                :key="`page_item_${page.label}`"
+                type="button"
+                class="btn btn-light"
+                :disabled="loading"
             >
-                    ...
-                </span>
+                ...
+            </button>
             <button
                 v-else
-                :key="`page_link_${page.label}`"
-                class="page-link"
+                :key="`page_item_${page.label}`"
+                type="button"
+                class="btn btn-light"
+                :disabled="loading"
                 @click="changePage(page.label)"
             >
                 {{ page.label }}
             </button>
-        </li>
-        <li
-            class="page-item"
-            :class="{ disabled: (isLastPage || loading) }"
+        </template>
+        <button
+            class="btn btn-light"
+            :disabled="isLastPage || loading"
+            @click.prevent="nextPage"
         >
-            <span
-                v-if="isLastPage"
-                class="page-link"
-                aria-hidden="true"
-            >
-                &raquo;
-            </span>
-            <a
-                v-else
-                class="page-link"
-                href="#"
-                @click.prevent="nextPage"
-            >
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
+            &raquo;
+        </button>
+    </div>
 </template>
 
 <script>
     export default {
         name: 'AppPaginator',
+
+        data() {
+            return {
+                pageInputFormData: this.currentPageNumber,
+            };
+        },
 
         computed: {
             loading() {
