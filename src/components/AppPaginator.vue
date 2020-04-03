@@ -87,6 +87,7 @@
                     v-for="size of availablePageSizes"
                     :key="`page_size_${size}`"
                     class="dropdown-item"
+                    :class="{ 'disabled': size === pageSize }"
                     href="#"
                     @click.prevent="setPageSize(size)"
                 >
