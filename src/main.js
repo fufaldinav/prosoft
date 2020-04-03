@@ -4,7 +4,6 @@ import store from './store';
 import router from './router';
 
 import 'bootstrap';
-window.$ = window.jQuery = require('jquery');
 import './sass/main.scss';
 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';

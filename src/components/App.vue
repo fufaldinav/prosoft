@@ -41,7 +41,7 @@
                                     :key="`hidden_field_${fieldName}`"
                                     class="dropdown-item d-flex"
                                     href="#"
-                                    @click.prevent="toggleField(fieldName)"
+                                    @click.prevent.stop="toggleField(fieldName)"
                                 >
                                     <span class="mr-auto">
                                         {{ field.title }}
@@ -183,15 +183,6 @@
                 }
             },
         },
-
-        created() {
-            $(function() {
-                $('.dropdown-menu').on('click', function(event) {
-                    event.stopPropagation();
-                });
-
-            });
-        }
     };
 </script>
 
