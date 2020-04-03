@@ -23,7 +23,6 @@ body {
 
 .app-table {
   table-layout: fixed;
-  font-size: 0.95rem;
   max-height: calc(100vh - 56px);
   overflow: auto;
 }
@@ -43,6 +42,22 @@ body {
 .app-hide-field-icon {
   opacity: 0;
   transition: opacity 0.25s;
+}
+
+.app-filters-menu label {
+  font-weight: bold;
+}
+
+.app-filters-menu .form-check-label {
+  font-weight: normal;
+}
+
+.app-filters-menu input::placeholder {
+  font-style: italic;
+}
+
+.app-filters-menu .form-group {
+  margin-bottom: 0.25rem;
 }
 
 .app-sort-icon {
@@ -73,6 +88,10 @@ body {
 .app-paginator:hover {
   opacity: 1;
   transition: opacity 0.25s;
+}
+
+.app-page-button-active {
+  font-weight: bold;
 }
 
 .app-progressbar-wrapper {

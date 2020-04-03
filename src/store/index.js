@@ -184,10 +184,11 @@ export default new Vuex.Store({
                 budget_min: typeof state.filters.budget_min === 'number' ? state.filters.budget_min : undefined,
                 budget_max: typeof state.filters.budget_max === 'number' ? state.filters.budget_max : undefined,
                 genres: state.filters.genres.length > 0 ? state.filters.genres : undefined,
+                original_language: state.filters.original_language || undefined,
                 popularity_min: typeof state.filters.popularity_min === 'number' ? state.filters.popularity_min : undefined,
                 popularity_max: typeof state.filters.popularity_max === 'number' ? state.filters.popularity_max : undefined,
-                release_date_min: state.filters.popularity_min || undefined,
-                release_date_max: state.filters.popularity_max || undefined,
+                release_date_min: state.filters.release_date_min || undefined,
+                release_date_max: state.filters.release_date_max || undefined,
                 revenue_min: typeof state.filters.revenue_min === 'number' ? state.filters.revenue_min : undefined,
                 revenue_max: typeof state.filters.revenue_max === 'number' ? state.filters.revenue_max : undefined,
                 runtime_min: typeof state.filters.runtime_min === 'number' ? state.filters.runtime_min : undefined,
@@ -412,7 +413,7 @@ export default new Vuex.Store({
             let genres = query.genres ? (Array.isArray(query.genres) ? query.genres : [query.genres]) : [];
             commit('setFilter', { filter: 'genres', value: genres });
 
-            let originalLanguage = query.original_language ? query.original_language : null;
+            let originalLanguage = query.original_language || null;
             if (originalLanguage !== state.filters.original_language) {
                 commit('setFilter', { filter: 'original_language', value: originalLanguage });
             }

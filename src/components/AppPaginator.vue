@@ -1,11 +1,11 @@
 <template>
     <div
         v-if="pageCount > 0"
-        class="btn-group mb-0 bg-light border rounded shadow app-paginator"
+        class="btn-group mb-0 bg-light rounded shadow app-paginator"
         role="group" aria-label="Pagination"
     >
         <div class="btn-group dropup" role="group">
-            <button id="pageManualSelect" type="button" class="btn btn-light dropdown-toggle app-dropdown-button-left-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="pageManualSelect" type="button" class="btn btn-light border dropdown-toggle app-dropdown-button-left-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Page:
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="pageManualSelect">
@@ -15,7 +15,7 @@
                         id="pageNumberForm"
                         type="number"
                         class="form-control"
-                        v-model="pageInputFormData"
+                        v-model.number="pageInputFormData"
                         min="1"
                         :max="pageCount"
                         :placeholder="currentPageNumber"
@@ -23,7 +23,7 @@
                 </div>
                 <button
                     type="button"
-                    class="btn btn-primary"
+                    class="btn btn-primary border"
                     :disabled="pageInputFormData < 1 || pageInputFormData > pageCount"
                     @click="changePage(pageInputFormData)"
                 >
@@ -33,7 +33,7 @@
         </div>
         <button
             type="button"
-            class="btn btn-light"
+            class="btn btn-light border"
             :disabled="isFirstPage || loading"
             @click="prevPage"
         >
@@ -46,7 +46,7 @@
                 v-if="page.active"
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-primary border app-page-button-active"
                 :disabled="loading"
             >
                 {{ page.label }}
@@ -55,7 +55,7 @@
                 v-else-if="page.disable"
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-light"
+                class="btn btn-light border"
                 :disabled="loading"
             >
                 ...
@@ -64,7 +64,7 @@
                 v-else
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-light"
+                class="btn btn-light border"
                 :disabled="loading"
                 @click="changePage(page.label)"
             >
@@ -72,14 +72,14 @@
             </button>
         </template>
         <button
-            class="btn btn-light"
+            class="btn btn-light border"
             :disabled="isLastPage || loading"
             @click.prevent="nextPage"
         >
             &raquo;
         </button>
         <div class="btn-group dropup" role="group">
-            <button id="pageSizeSelect" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="pageSizeSelect" type="button" class="btn btn-light border dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Page size: {{ pageSize }}
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="pageSizeSelect">
@@ -104,7 +104,7 @@
 
         data() {
             return {
-                pageInputFormData: this.currentPageNumber,
+                pageInputFormData: 1,
             };
         },
 
@@ -189,6 +189,12 @@
 
             setPageSize(size) {
                 this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page_size: size } });
+            },
+        },
+
+        watch: {
+            $route(to, from) {
+                this.pageInputFormData = to.query.page || this.currentPageNumber;
             }
         },
     };

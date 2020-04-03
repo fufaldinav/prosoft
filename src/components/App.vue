@@ -14,7 +14,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown">
                             <a
                                 id="fieldsDropdown"
@@ -35,7 +35,7 @@
                                     :icon="eyeIcon"
                                 />
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="fieldsDropdown">
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fieldsDropdown">
                                 <a
                                     v-for="(field, fieldName) in fields"
                                     :key="`hidden_field_${fieldName}`"
@@ -72,16 +72,10 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav mr-2">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="filtersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <li class="nav-item">
+                            <a type="button" class="nav-link" href="#" role="button" data-toggle="modal" data-target="#filtersMenu">
                                 <fa :icon="filterIcon"/>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="filtersDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Reset all</a>
-                            </div>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
@@ -109,10 +103,12 @@
         </main>
         <AppPaginator/>
         <AppProgressBar/>
+        <AppFiltersMenu/>
     </div>
 </template>
 
 <script>
+    import AppFiltersMenu from './AppFiltersMenu';
     import AppTable from './AppTable';
     import AppPaginator from './AppPaginator';
     import AppProgressBar from './AppProgressBar';
@@ -127,7 +123,7 @@
             };
         },
 
-        components: { AppTable, AppPaginator, AppProgressBar },
+        components: { AppFiltersMenu, AppTable, AppPaginator, AppProgressBar },
 
         computed: {
             filterIcon() {
