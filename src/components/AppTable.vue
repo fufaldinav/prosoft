@@ -1,24 +1,11 @@
 <template>
-    <div class="h-100 table-responsive">
-        <div
-            v-if="loading"
-            class="d-flex flex-row align-items-center h-100"
-        >
-            <div class="container">
-                <div class="justify-content-center text-center text-secondary">
-                    <fa :icon="syncIcon" size="4x" spin/>
-                </div>
-            </div>
-        </div>
-        <table
-            v-else
-            class="table table-bordered table-striped table-sm app-table"
-        >
+    <div class="bg-light table-responsive h-100">
+        <table class="table table-bordered table-striped table-sm app-table">
             <col style="width: 4rem;"/>
             <col
-                v-for="field in displayedFields"
-                :key="`col_${field}`"
-                :style="colWidth(field)"
+                v-for="fieldName in displayedFields"
+                :key="`col_${fieldName}`"
+                :style="colWidth(fieldName)"
             />
             <thead class="thead-light">
             <tr>
@@ -26,34 +13,32 @@
                     #
                 </th>
                 <th
-                    v-for="field in displayedFields"
-                    :key="`field_${field}`"
-                    :id="field"
+                    v-for="fieldName in displayedFields"
+                    :key="`field_${fieldName}`"
+                    :id="fieldName"
                     class="app-table-th"
                     scope="col"
                 >
-                    <div class="clearfix">
-                        <span class="float-left">
-                            {{ fields[field].name }}
+                    <div class="d-flex">
+                        <span class="mr-auto">
+                            {{ fields[fieldName].title }}
                         </span>
-                        <span class="float-right">
-                            <a
-                                class="text-danger app-hide-field-icon"
-                                href="#"
-                                @click.prevent="hideField(field)"
-                            >
+                        <a
+                            class="text-danger mr-1 app-hide-field-icon"
+                            href="#"
+                            @click.prevent="hideField(fieldName)"
+                        >
                             <fa :icon="eyeSlashIcon"/>
                         </a>
                         <a
-                            v-if="fields[field].hasOwnProperty('sortable') && fields[field].sortable === true"
+                            v-if="fields[fieldName].hasOwnProperty('sortable') && fields[fieldName].sortable === true"
                             class="text-dark app-sort-icon"
-                            :class="{ 'app-sort-icon-active': sortField === field }"
+                            :class="{ 'app-sort-icon-active': sortField === fieldName }"
                             href="#"
-                            @click.prevent="sortTable(field)"
+                            @click.prevent="sortTable(fieldName)"
                         >
-                            <fa :icon="drawSortIcon(field)"/>
+                            <fa :icon="drawSortIcon(fieldName)"/>
                         </a>
-                        </span>
                     </div>
                 </th>
             </tr>
@@ -73,7 +58,7 @@
 
 <script>
     import AppMovie from './AppMovie';
-    import {faSort, faSortAmountDown, faSortAmountUp, faSync, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+    import {faSort, faSortAmountDown, faSortAmountUp, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'AppTable',
@@ -83,10 +68,6 @@
         computed: {
             loading() {
                 return this.$store.state.loading;
-            },
-
-            syncIcon() {
-                return faSync;
             },
 
             eyeSlashIcon() {

@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="pageCount > 0"
-        class="app-paginator btn-group mb-0 border rounded shadow"
+        class="btn-group mb-0 border rounded shadow app-paginator"
         role="group" aria-label="Pagination"
     >
         <div class="btn-group dropup" role="group">

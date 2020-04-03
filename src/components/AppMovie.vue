@@ -1,61 +1,63 @@
 <template>
     <tr>
         <th scope="row">
-            <div class="app-table-cell1 text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ number }}
             </div>
         </th>
         <td
-            v-if="displayedFields.indexOf('id') > -1 "
+            v-show="displayedFields.indexOf('id') > -1"
             headers="id"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ movie.id }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('title') > -1 "
+            v-show="displayedFields.indexOf('title') > -1"
             headers="title"
         >
-            <div class="text-truncate">
-                {{ movie.title ? movie.title : 'N/A' }}
+            <div class="text-truncate app-table-cell-wrapper">
+                {{ title }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('original_title') > -1 "
+            v-show="displayedFields.indexOf('original_title') > -1"
             headers="original_title"
         >
-            <div class="text-truncate">
-                {{ movie.original_title ? movie.original_title : 'N/A'}}
+            <div class="text-truncate app-table-cell-wrapper">
+                {{ originalTitle }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('release_date') > -1 "
+            v-show="displayedFields.indexOf('release_date') > -1"
             headers="release_date"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ releaseDateFormatted }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('status') > -1 "
+            v-show="displayedFields.indexOf('status') > -1"
             headers="status"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <a
                     v-if="movie.status !== null"
                     href="#"
                     target="_blank"
                     @click.prevent="filter('status', movie.status)"
-                >{{ movie.status }}</a>
+                >
+                    {{ movie.status }}
+                </a>
                 <span v-else>N/A</span>
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('production_countries') > -1 "
+            v-show="displayedFields.indexOf('production_countries') > -1"
             headers="production_countries"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <template v-if="movie.production_countries !== null">
                     <span
                         v-for="n in movie.production_countries.length"
@@ -68,18 +70,18 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('tagline') > -1 "
+            v-show="displayedFields.indexOf('tagline') > -1"
             headers="tagline"
         >
-            <div class="text-truncate">
-                {{ movie.tagline ? movie.tagline : 'N/A' }}
+            <div class="text-truncate app-table-cell-wrapper">
+                {{ tagline }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('genres') > -1 "
+            v-show="displayedFields.indexOf('genres') > -1"
             headers="genres"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <template v-if="movie.genres !== null">
                     <span
                         v-for="n in movie.genres.length"
@@ -96,26 +98,26 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('budget') > -1 "
+            v-show="displayedFields.indexOf('budget') > -1"
             headers="budget"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ budgetFormatted }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('revenue') > -1 "
+            v-show="displayedFields.indexOf('revenue') > -1"
             headers="revenue"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ revenueFormatted }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('adult') > -1 "
+            v-show="displayedFields.indexOf('adult') > -1"
             headers="adult"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <a
                     v-if="movie.adult !== null"
                     href="#"
@@ -126,18 +128,18 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('belongs_to_collection') > -1 "
+            v-show="displayedFields.indexOf('belongs_to_collection') > -1"
             headers="belongs_to_collection"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ movie.belongs_to_collection ? movie.belongs_to_collection.name : 'N/A' }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('homepage') > -1 "
+            v-show="displayedFields.indexOf('homepage') > -1"
             headers="homepage"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <a
                     v-if="movie.homepage !== null"
                     :href="movie.homepage"
@@ -147,10 +149,10 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('imdb_id') > -1 "
+            v-show="displayedFields.indexOf('imdb_id') > -1"
             headers="imdb_id"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <a
                     v-if="movie.imdb_id !== null"
                     :href="`http://www.imdb.com/title/${movie.imdb_id}/`"
@@ -160,10 +162,10 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('original_language') > -1 "
+            v-show="displayedFields.indexOf('original_language') > -1"
             headers="original_language"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <a
                     v-if="originalLanguage !== null"
                     href="#"
@@ -174,10 +176,10 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('spoken_languages') > -1 "
+            v-show="displayedFields.indexOf('spoken_languages') > -1"
             headers="spoken_languages"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <template v-if="movie.spoken_languages !== null">
                     <span
                         v-for="n in movie.spoken_languages.length"
@@ -194,18 +196,18 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('overview') > -1 "
+            v-show="displayedFields.indexOf('overview') > -1"
             headers="overview"
         >
-            <div class="text-truncate">
-                {{ movie.overview ? movie.overview : 'N/A' }}
+            <div class="text-truncate app-table-cell-wrapper">
+                {{ overview }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('production_companies') > -1 "
+            v-show="displayedFields.indexOf('production_companies') > -1"
             headers="production_companies"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 <template v-if="movie.production_companies !== null">
                     <span
                         v-for="n in movie.production_companies.length"
@@ -218,35 +220,35 @@
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('runtime') > -1 "
+            v-show="displayedFields.indexOf('runtime') > -1"
             headers="runtime"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ runtimeFormatted }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('popularity') > -1 "
+            v-show="displayedFields.indexOf('popularity') > -1"
             headers="popularity"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ popularityShort }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('vote_average') > -1 "
+            v-show="displayedFields.indexOf('vote_average') > -1"
             headers="vote_average"
         >
-            <div class="text-truncate">
+            <div class="text-truncate app-table-cell-wrapper">
                 {{ voteAverageShort }}
             </div>
         </td>
         <td
-            v-if="displayedFields.indexOf('vote_count') > -1 "
+            v-show="displayedFields.indexOf('vote_count') > -1"
             headers="vote_count"
         >
-            <div class="text-truncate">
-                {{ movie.vote_count ? movie.vote_count : 'N/A' }}
+            <div class="text-truncate app-table-cell-wrapper">
+                {{ voteCount }}
             </div>
         </td>
     </tr>
@@ -270,6 +272,26 @@
         computed: {
             displayedFields() {
                 return this.$store.getters.getDisplayedFields;
+            },
+
+            title() {
+                return this.movie.title || 'N/A';
+            },
+
+            originalTitle() {
+                return this.movie.original_title || 'N/A';
+            },
+
+            tagline() {
+                return this.movie.tagline || 'N/A';
+            },
+
+            overview() {
+                return this.movie.overview || 'N/A';
+            },
+
+            voteCount() {
+                return this.movie.vote_count || 'N/A';
             },
 
             originalLanguage() {

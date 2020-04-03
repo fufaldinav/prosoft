@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <header class="container-fluid px-0 app-header">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light pt-1 app-navbar">
+        <header>
+            <nav class="navbar navbar-light navbar-expand-lg bg-light shadow-sm fixed-top">
                 <a
                     class="navbar-brand"
                     href="#"
@@ -9,7 +9,7 @@
                 >
                     Moviepedia
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle filters">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"/>
                 </button>
 
@@ -17,22 +17,22 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item dropdown">
                             <a
-                                class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
-                                :class="hiddenFields.length === 0 ? 'text-secondary' : 'text-danger'"
-                                href="#"
                                 id="fieldsDropdown"
+                                class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
+                                :class="hasHiddenFields ? 'text-danger' : 'text-secondary'"
                                 role="button"
+                                href="#"
                                 data-toggle="dropdown"
                                 aria-haspopup="true"
                                 aria-expanded="false"
                             >
                                 <fa
-                                    v-if="hiddenFields.length === 0"
-                                    :icon="eyeIcon"
+                                    v-if="hasHiddenFields"
+                                    :icon="eyeSlashIcon"
                                 />
                                 <fa
                                     v-else
-                                    :icon="eyeSlashIcon"
+                                    :icon="eyeIcon"
                                 />
                             </a>
                             <div class="dropdown-menu" aria-labelledby="fieldsDropdown">
@@ -44,7 +44,7 @@
                                     @click.prevent="toggleField(fieldName)"
                                 >
                                     <span class="mr-auto">
-                                        {{ field.name }}
+                                        {{ field.title }}
                                     </span>
                                     <span
                                         class="ml-2"
@@ -87,10 +87,10 @@
                     <form class="form-inline my-2 my-lg-0">
                         <input
                             v-model="searchPhrase"
-                            class="form-control mr-sm-2"
+                            class="form-control mr-sm-2 app-phrase-search-input"
                             type="search"
-                            placeholder="Phrase from the movie"
-                            aria-label="Phrase search"
+                            placeholder="phrase from movie..."
+                            aria-label="Search"
                         >
                         <button
                             class="btn btn-success my-2 my-sm-0"
@@ -104,7 +104,7 @@
                 </div>
             </nav>
         </header>
-        <main class="container-fluid px-0 app-body">
+        <main>
             <RouterView/>
         </main>
         <AppPaginator/>
@@ -114,6 +114,7 @@
 <script>
     import AppTable from './AppTable';
     import AppPaginator from './AppPaginator';
+    import AppProgressBar from './AppProgressBar';
     import {faFilter, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
     export default {
@@ -125,7 +126,7 @@
             };
         },
 
-        components: { AppTable, AppPaginator },
+        components: { AppTable, AppPaginator, AppProgressBar },
 
         computed: {
             filterIcon() {
@@ -146,6 +147,10 @@
 
             hiddenFields() {
                 return this.$store.getters.getHiddenFields;
+            },
+
+            hasHiddenFields() {
+                return this.hiddenFields.length > 0;
             },
         },
 
@@ -171,7 +176,9 @@
 
             showAllFields() {
                 for (let fieldName of this.hiddenFields) {
-                    this.$store.commit('showField', fieldName);
+                    if (this.fields[fieldName].shown !== true) {
+                        this.$store.commit('showField', fieldName);
+                    }
                 }
             },
         },
