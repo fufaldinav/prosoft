@@ -6,6 +6,21 @@ body {
   padding-top: 56px;
 }
 
+.app-dropdown-button-left-caret::before {
+  display: inline-block;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: "";
+  border-top: 0;
+  border-right: 0.3em solid transparent;
+  border-bottom: 0.3em solid;
+  border-left: 0.3em solid transparent;
+}
+
+.dropup .app-dropdown-button-left-caret::after {
+  display: none;
+}
+
 .app-table {
   table-layout: fixed;
   font-size: 0.95rem;
@@ -72,10 +87,29 @@ body {
 .slide-fade-enter-active {
   transition: all 1.0s;
 }
+
 .slide-fade-leave-active {
   transition: all 1.5s;
 }
+
 .slide-fade-enter, .slide-fade-leave-to {
   transform: translateY(10px);
   opacity: 0;
+}
+
+.flat-enter-active {
+  animation: flat .5s;
+}
+
+.flat-leave-active {
+  animation: flat .5s reverse;
+}
+
+@keyframes flat {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
 }

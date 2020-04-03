@@ -1,9 +1,6 @@
 <template>
     <div class="position-fixed w-100 d-flex justify-content-center app-progressbar-wrapper mx-auto">
-        <transition
-            name="slide-fade"
-            :duration="{ enter: 1000, leave: 1500 }"
-        >
+        <transition name="slide-fade">
             <div
                 v-show="loading"
                 class="progress w-25 border border-primary shadow app-progressbar"

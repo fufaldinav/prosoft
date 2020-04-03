@@ -5,7 +5,7 @@
         role="group" aria-label="Pagination"
     >
         <div class="btn-group dropup" role="group">
-            <button id="pageManualSelect" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button id="pageManualSelect" type="button" class="btn btn-light dropdown-toggle app-dropdown-button-left-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Page:
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="pageManualSelect">
