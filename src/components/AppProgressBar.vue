@@ -1,25 +1,28 @@
 <template>
-    <div
-        v-if="true"
-        class="d-flex flex-row align-items-center h-100"
-    >
-        <div class="container">
-            <div class="justify-content-center text-center text-secondary">
-                <fa :icon="syncIcon" size="4x" spin/>
+    <div class="position-fixed w-100 d-flex justify-content-center app-progressbar-wrapper mx-auto">
+        <transition
+            name="slide-fade"
+            :duration="{ enter: 1000, leave: 1500 }"
+        >
+            <div
+                v-show="loading"
+                class="progress w-25 border border-primary shadow app-progressbar"
+            >
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    Loading...
+                </div>
             </div>
-        </div>
+        </transition>
     </div>
 </template>
 
 <script>
-    import {faSync} from '@fortawesome/free-solid-svg-icons';
-
     export default {
         name: 'AppProgressBar',
 
         computed: {
-            syncIcon() {
-                return faSync;
+            loading() {
+                return this.$store.state.loading;
             },
         },
     };

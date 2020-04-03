@@ -108,6 +108,7 @@
             <RouterView/>
         </main>
         <AppPaginator/>
+        <AppProgressBar/>
     </div>
 </template>
 

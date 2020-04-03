@@ -9,7 +9,7 @@ body {
 .app-table {
   table-layout: fixed;
   font-size: 0.95rem;
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 56px);
   overflow: auto;
 }
 
@@ -58,4 +58,24 @@ body {
 .app-paginator:hover {
   opacity: 1;
   transition: opacity 0.25s;
+}
+
+.app-progressbar-wrapper {
+  pointer-events: none;
+  bottom: 2rem;
+}
+
+.app-progressbar {
+  height: 1.25rem;
+}
+
+.slide-fade-enter-active {
+  transition: all 1.0s;
+}
+.slide-fade-leave-active {
+  transition: all 1.5s;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
