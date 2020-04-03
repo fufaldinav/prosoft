@@ -31,7 +31,7 @@ export default new Vuex.Store({
         loading: false,
         currentPageNumber: 1, //здесь и далее отсчёт страниц начинается с единицы, читай коммент в запросе
         pageSize: 25,
-        availablePageSizes: [0, 10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
+        availablePageSizes: [10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         fields: {
             id: { title: 'ID',  shown: true, width: 6 },
             title: { title: 'Title',  shown: true, width: 12 },

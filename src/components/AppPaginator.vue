@@ -1,16 +1,16 @@
 <template>
     <div
         v-if="pageCount > 0"
-        class="btn-group mb-0 border rounded shadow app-paginator"
+        class="btn-group mb-0 bg-light border rounded shadow app-paginator"
         role="group" aria-label="Pagination"
     >
         <div class="btn-group dropup" role="group">
             <button id="pageManualSelect" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Page
+                Page:
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="pageManualSelect">
                 <div class="form-group">
-                    <label for="pageNumberForm">Chose page:</label>
+                    <label for="pageNumberForm">Choose page:</label>
                     <input
                         id="pageNumberForm"
                         type="number"
@@ -78,6 +78,22 @@
         >
             &raquo;
         </button>
+        <div class="btn-group dropup" role="group">
+            <button id="pageSizeSelect" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Page size: {{ pageSize }}
+            </button>
+            <div class="dropdown-menu p-3" aria-labelledby="pageSizeSelect">
+                <a
+                    v-for="size of availablePageSizes"
+                    :key="`page_size_${size}`"
+                    class="dropdown-item"
+                    href="#"
+                    @click.prevent="setPageSize(size)"
+                >
+                    {{ size }}
+                </a>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -102,6 +118,14 @@
 
             currentPageNumber() {
                 return this.$store.state.currentPageNumber;
+            },
+
+            pageSize() {
+                return this.$store.state.pageSize;
+            },
+
+            availablePageSizes() {
+                return this.$store.state.availablePageSizes;
             },
 
             isFirstPage() {
@@ -161,6 +185,10 @@
                 let pageNumber = this.currentPageNumber < this.pageCount ? this.currentPageNumber + 1 : this.pageCount;
                 this.changePage(pageNumber);
             },
+
+            setPageSize(size) {
+                this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page_size: size } });
+            }
         },
     };
 </script>
