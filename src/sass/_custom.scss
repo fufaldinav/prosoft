@@ -25,6 +25,7 @@ body {
   table-layout: fixed;
   max-height: calc(100vh - 56px);
   overflow: auto;
+  font-size: 0.875rem;
 }
 
 .app-table-th:hover .app-hide-field-icon {
@@ -91,6 +92,10 @@ body {
 }
 
 .app-page-button-active {
+  font-weight: bold;
+}
+
+.app-page-size-menu .dropdown-item.disabled {
   font-weight: bold;
 }
 

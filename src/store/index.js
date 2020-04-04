@@ -26,6 +26,10 @@ function naturalCompare(a, b) {
     return ax.length - bx.length;
 }
 
+function isNumber(value) {
+    return typeof value === 'number' && isFinite(value) && ! isNaN(value);
+}
+
 export default new Vuex.Store({
     state: {
         loading: false,
@@ -33,28 +37,28 @@ export default new Vuex.Store({
         pageSize: 25,
         availablePageSizes: [10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         fields: {
-            id: { title: 'ID',  shown: true, width: 6 },
-            title: { title: 'Title',  shown: true, width: 12 },
-            original_title: { title: 'Original title',  shown: true, width: 12 },
-            release_date: { title: 'Release date',  shown: true, width: 10, sortable: true },
-            status: { title: 'Status',  shown: true, width: 8, sortable: true },
-            production_countries: { title: 'Countries',  shown: true, width: 12 },
-            tagline: { title: 'Tagline',  shown: true, width: 10 },
-            genres: { title: 'Genres',  shown: true, width: 10 },
-            budget: { title: 'Budget',  shown: true, width: 8, sortable: true },
-            revenue: { title: 'Revenue',  shown: true, width: 8, sortable: true },
-            adult: { title: 'Adult',  shown: true, width: 6 },
-            belongs_to_collection: { title: 'Collection',  shown: true, width: 12 },
-            homepage: { title: 'Homepage',  shown: true, width: 8 },
-            imdb_id: { title: 'IMDB',  shown: true, width: 6, sortable: true },
-            original_language: { title: 'Original language',  shown: true, width: 12, sortable: true },
-            spoken_languages: { title: 'Language',  shown: true, width: 12 },
-            overview: { title: 'Overview',  shown: true, width: 16 },
-            production_companies: { title: 'Production Co',  shown: true, width: 12 },
-            runtime: { title: 'Runtime',  shown: true, width: 8, sortable: true },
-            popularity: { title: 'Popularity',  shown: true, width: 10, sortable: true },
-            vote_average: { title: 'Vote average',  shown: true, width: 10, sortable: true },
-            vote_count: { title: 'Vote count',  shown: true, width: 10, sortable: true },
+            id: { title: 'ID', shown: true, width: 6 },
+            title: { title: 'Title', shown: true, width: 12 },
+            original_title: { title: 'Original title', shown: true, width: 12 },
+            release_date: { title: 'Release date', shown: true, width: 10, sortable: true },
+            status: { title: 'Status', shown: true, width: 8, sortable: true },
+            production_countries: { title: 'Countries', shown: true, width: 12 },
+            tagline: { title: 'Tagline', shown: true, width: 10 },
+            genres: { title: 'Genres', shown: true, width: 10 },
+            budget: { title: 'Budget', shown: true, width: 8, sortable: true },
+            revenue: { title: 'Revenue', shown: true, width: 8, sortable: true },
+            adult: { title: 'Adult', shown: true, width: 6 },
+            belongs_to_collection: { title: 'Collection', shown: true, width: 12 },
+            homepage: { title: 'Homepage', shown: true, width: 8 },
+            imdb_id: { title: 'IMDB', shown: true, width: 6, sortable: true },
+            original_language: { title: 'Original language', shown: true, width: 12, sortable: true },
+            spoken_languages: { title: 'Language', shown: true, width: 12 },
+            overview: { title: 'Overview', shown: true, width: 16 },
+            production_companies: { title: 'Production Co', shown: true, width: 12 },
+            runtime: { title: 'Runtime', shown: true, width: 8, sortable: true },
+            popularity: { title: 'Popularity', shown: true, width: 10, sortable: true },
+            vote_average: { title: 'Vote average', shown: true, width: 10, sortable: true },
+            vote_count: { title: 'Vote count', shown: true, width: 10, sortable: true },
         },
         sortField: null,
         sortOrder: 'asc',
@@ -181,24 +185,24 @@ export default new Vuex.Store({
                 ids: state.filters.ids.length > 0 ? state.filters.ids : undefined,
                 search: state.filters.search || undefined,
                 adult: typeof state.filters.adult === 'boolean' ? state.filters.adult : undefined,
-                budget_min: typeof state.filters.budget_min === 'number' ? state.filters.budget_min : undefined,
-                budget_max: typeof state.filters.budget_max === 'number' ? state.filters.budget_max : undefined,
+                budget_min: isNumber(state.filters.budget_min) ? state.filters.budget_min : undefined,
+                budget_max: isNumber(state.filters.budget_max) ? state.filters.budget_max : undefined,
                 genres: state.filters.genres.length > 0 ? state.filters.genres : undefined,
                 original_language: state.filters.original_language || undefined,
-                popularity_min: typeof state.filters.popularity_min === 'number' ? state.filters.popularity_min : undefined,
-                popularity_max: typeof state.filters.popularity_max === 'number' ? state.filters.popularity_max : undefined,
+                popularity_min: isNumber(state.filters.popularity_min) ? state.filters.popularity_min : undefined,
+                popularity_max: isNumber(state.filters.popularity_max) ? state.filters.popularity_max : undefined,
                 release_date_min: state.filters.release_date_min || undefined,
                 release_date_max: state.filters.release_date_max || undefined,
-                revenue_min: typeof state.filters.revenue_min === 'number' ? state.filters.revenue_min : undefined,
-                revenue_max: typeof state.filters.revenue_max === 'number' ? state.filters.revenue_max : undefined,
-                runtime_min: typeof state.filters.runtime_min === 'number' ? state.filters.runtime_min : undefined,
-                runtime_max: typeof state.filters.runtime_max === 'number' ? state.filters.runtime_max : undefined,
+                revenue_min: isNumber(state.filters.revenue_min) ? state.filters.revenue_min : undefined,
+                revenue_max: isNumber(state.filters.revenue_max) ? state.filters.revenue_max : undefined,
+                runtime_min: isNumber(state.filters.runtime_min) ? state.filters.runtime_min : undefined,
+                runtime_max: isNumber(state.filters.runtime_max) ? state.filters.runtime_max : undefined,
                 spoken_languages: state.filters.spoken_languages.length > 0 ? state.filters.spoken_languages : undefined,
                 status: state.filters.status || undefined,
-                vote_average_min: typeof state.filters.vote_average_min === 'number' ? state.filters.vote_average_min : undefined,
-                vote_average_max: typeof state.filters.vote_average_max === 'number' ? state.filters.vote_average_max : undefined,
-                vote_count_min: typeof state.filters.vote_count_min === 'number' ? state.filters.vote_count_min : undefined,
-                vote_count_max: typeof state.filters.vote_count_max === 'number' ? state.filters.vote_count_max : undefined,
+                vote_average_min: isNumber(state.filters.vote_average_min) ? state.filters.vote_average_min : undefined,
+                vote_average_max: isNumber(state.filters.vote_average_max) ? state.filters.vote_average_max : undefined,
+                vote_count_min: isNumber(state.filters.vote_count_min) ? state.filters.vote_count_min : undefined,
+                vote_count_max: isNumber(state.filters.vote_count_max) ? state.filters.vote_count_max : undefined,
             };
         },
     },
@@ -608,7 +612,7 @@ export default new Vuex.Store({
                                 }
                             }
 
-                            if (state.statuses.indexOf(movie.status) === -1) {
+                            if (movie.status !== null && state.statuses.indexOf(movie.status) === -1) {
                                 commit('addStatus', movie.status);
                             }
 

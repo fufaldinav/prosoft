@@ -37,7 +37,7 @@
             :disabled="isFirstPage || loading"
             @click="prevPage"
         >
-            &laquo;
+            <fa :icon="angleDoubleLeftIcon"/>
         </button>
         <template
             v-for="page in items"
@@ -76,13 +76,13 @@
             :disabled="isLastPage || loading"
             @click.prevent="nextPage"
         >
-            &raquo;
+            <fa :icon="angleDoubleRightIcon"/>
         </button>
         <div class="btn-group dropup" role="group">
             <button id="pageSizeSelect" type="button" class="btn btn-light border dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Page size: {{ pageSize }}
             </button>
-            <div class="dropdown-menu p-3" aria-labelledby="pageSizeSelect">
+            <div class="dropdown-menu p-3 app-page-size-menu" aria-labelledby="pageSizeSelect">
                 <a
                     v-for="size of availablePageSizes"
                     :key="`page_size_${size}`"
@@ -99,6 +99,8 @@
 </template>
 
 <script>
+    import {faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+
     export default {
         name: 'AppPaginator',
 
@@ -109,6 +111,14 @@
         },
 
         computed: {
+            angleDoubleLeftIcon() {
+                return faAngleDoubleLeft;
+            },
+
+            angleDoubleRightIcon() {
+                return faAngleDoubleRight;
+            },
+
             loading() {
                 return this.$store.state.loading;
             },

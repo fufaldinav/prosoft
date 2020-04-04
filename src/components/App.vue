@@ -1,103 +1,87 @@
 <template>
     <div id="app">
-        <header>
-            <nav class="navbar navbar-light navbar-expand-lg bg-light shadow-sm fixed-top">
-                <a
-                    class="navbar-brand"
-                    href="#"
-                    @click.prevent="reloadPage()"
-                >
-                    Moviepedia
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"/>
-                </button>
+        <nav class="navbar navbar-light navbar-expand-md bg-light shadow-sm fixed-top">
+            <a
+                class="navbar-brand"
+                href="#"
+                @click.prevent="reloadPage()"
+            >
+                Moviepedia //TODO фильтр даты выхода
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"/>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mr-2">
+                    <li class="nav-item dropdown">
+                        <a
+                            id="fieldsDropdown"
+                            class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
+                            :class="hasHiddenFields ? 'text-danger' : 'text-secondary'"
+                            role="button"
+                            href="#"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            Fields
+                            <fa :icon="hasHiddenFields ? eyeSlashIcon : eyeIcon"/>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fieldsDropdown">
                             <a
-                                id="fieldsDropdown"
-                                class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
-                                :class="hasHiddenFields ? 'text-danger' : 'text-secondary'"
-                                role="button"
+                                v-for="(field, fieldName) in fields"
+                                :key="`hidden_field_${fieldName}`"
+                                class="dropdown-item d-flex"
                                 href="#"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
+                                @click.prevent.stop="toggleField(fieldName)"
                             >
-                                <fa
-                                    v-if="hasHiddenFields"
-                                    :icon="eyeSlashIcon"
-                                />
-                                <fa
-                                    v-else
-                                    :icon="eyeIcon"
-                                />
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fieldsDropdown">
-                                <a
-                                    v-for="(field, fieldName) in fields"
-                                    :key="`hidden_field_${fieldName}`"
-                                    class="dropdown-item d-flex"
-                                    href="#"
-                                    @click.prevent.stop="toggleField(fieldName)"
+                        <span class="mr-auto">
+                            {{ field.title }}
+                        </span>
+                                <span
+                                    class="ml-2"
+                                    :class="field.shown === true ? 'text-success' : 'text-danger'"
                                 >
-                                    <span class="mr-auto">
-                                        {{ field.title }}
-                                    </span>
-                                    <span
-                                        class="ml-2"
-                                        :class="field.shown === true ? 'text-success' : 'text-danger'"
-                                    >
-                                        <fa
-                                            v-if="field.shown === true"
-                                            :icon="eyeIcon"
-                                        />
-                                        <fa
-                                            v-else
-                                            :icon="eyeSlashIcon"
-                                        />
-                                    </span>
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a
-                                    class="dropdown-item"
-                                    href="#"
-                                    @click.prevent="showAllFields()"
-                                >
-                                    Show all
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav mr-2">
-                        <li class="nav-item">
-                            <a type="button" class="nav-link" href="#" role="button" data-toggle="modal" data-target="#filtersMenu">
-                                <fa :icon="filterIcon"/>
+                            <fa :icon="field.shown === true ? eyeIcon : eyeSlashIcon"/>
+                        </span>
                             </a>
-                        </li>
-                    </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input
-                            v-model="searchPhrase"
-                            class="form-control mr-sm-2 app-phrase-search-input"
-                            type="search"
-                            placeholder="phrase from movie..."
-                            aria-label="Search"
-                        >
-                        <button
-                            class="btn btn-success my-2 my-sm-0"
-                            type="button"
-                            :disabled="searchPhrase === '' || searchPhrase === null"
-                            @click="phraseSearch()"
-                        >
-                            Search
-                        </button>
-                    </form>
-                </div>
-            </nav>
-        </header>
+                            <div class="dropdown-divider"></div>
+                            <a
+                                class="dropdown-item"
+                                href="#"
+                                @click.prevent="showAllFields()"
+                            >
+                                Show all
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#filtersMenu">
+                            Filters
+                            <fa :icon="filterIcon"/>
+                        </a>
+                    </li>
+                </ul>
+                <form class="form-inline">
+                    <input
+                        v-model="searchPhrase"
+                        class="form-control form-control-sm mr-sm-2 app-phrase-search-input"
+                        type="search"
+                        placeholder="phrase from movie..."
+                        aria-label="Search"
+                    >
+                    <button
+                        class="btn btn-sm btn-success my-2 my-sm-0"
+                        type="button"
+                        :disabled="searchPhrase === '' || searchPhrase === null"
+                        @click="phraseSearch()"
+                    >
+                        Search
+                    </button>
+                </form>
+            </div>
+        </nav>
         <main>
             <RouterView/>
         </main>
