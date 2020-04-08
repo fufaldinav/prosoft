@@ -200,7 +200,7 @@
                                         type="text"
                                         class="form-control"
                                         :min="filtersRanges.release_date_min"
-                                        :max="filtersRanges.release_date_max"
+                                        :max="releaseDateMax === null ? filtersRanges.release_date_max : releaseDateMax"
                                         :placeholder="`max: ${filtersRanges.release_date_min}`"
                                         v-model="releaseDateMin"
                                         @focus="setInputTypeToDate($event)"
@@ -211,7 +211,7 @@
                                     <input
                                         type="text"
                                         class="form-control"
-                                        :min="filtersRanges.release_date_min"
+                                        :min="releaseDateMin === null ? filtersRanges.release_date_min : releaseDateMin"
                                         :max="filtersRanges.release_date_max"
                                         :placeholder="`max: ${filtersRanges.release_date_max}`"
                                         v-model="releaseDateMax"
@@ -496,7 +496,7 @@
 
                 set(value) {
                     this.filters.budget_min = this.checkInputNumberValue('budget', value);
-                    if (this.filters.budget_min !== this.filters.budget_max && this.filters.budget_min > this.filters.budget_max) {
+                    if (this.filters.budget_max !== null && this.filters.budget_min > this.filters.budget_max) {
                         this.filters.budget_min = this.filters.budget_max;
                     }
                 },
@@ -509,7 +509,7 @@
 
                 set(value) {
                     this.filters.budget_max = this.checkInputNumberValue('budget', value);
-                    if (this.filters.budget_max !== this.filters.budget_min && this.filters.budget_max < this.filters.budget_min) {
+                    if (this.filters.budget_min !== null && this.filters.budget_max < this.filters.budget_min) {
                         this.filters.budget_max = this.filters.budget_min;
                     }
                 },
@@ -522,7 +522,7 @@
 
                 set(value) {
                     this.filters.popularity_min = this.checkInputNumberValue('popularity', value);
-                    if (this.filters.popularity_min !== this.filters.popularity_max && this.filters.popularity_min > this.filters.popularity_max) {
+                    if (this.filters.popularity_max !== null && this.filters.popularity_min > this.filters.popularity_max) {
                         this.filters.popularity_min = this.filters.popularity_max;
                     }
                 },
@@ -535,7 +535,7 @@
 
                 set(value) {
                     this.filters.popularity_max = this.checkInputNumberValue('popularity', value);
-                    if (this.filters.popularity_max !== this.filters.popularity_min && this.filters.popularity_max < this.filters.popularity_min) {
+                    if (this.filters.popularity_min !== null && this.filters.popularity_max < this.filters.popularity_min) {
                         this.filters.popularity_max = this.filters.popularity_min;
                     }
                 },
@@ -602,7 +602,7 @@
 
                 set(value) {
                     this.filters.revenue_min = this.checkInputNumberValue('revenue', value);
-                    if (this.filters.revenue_min !== this.filters.revenue_max && this.filters.revenue_min > this.filters.revenue_max) {
+                    if (this.filters.revenue_max !== null && this.filters.revenue_min > this.filters.revenue_max) {
                         this.filters.revenue_min = this.filters.revenue_max;
                     }
                 },
@@ -615,7 +615,7 @@
 
                 set(value) {
                     this.filters.revenue_max = this.checkInputNumberValue('revenue', value);
-                    if (this.filters.revenue_max !== this.filters.revenue_min && this.filters.revenue_max < this.filters.revenue_min) {
+                    if (this.filters.revenue_min !== null && this.filters.revenue_max < this.filters.revenue_min) {
                         this.filters.revenue_max = this.filters.revenue_min;
                     }
                 },
@@ -628,7 +628,7 @@
 
                 set(value) {
                     this.filters.runtime_min = this.checkInputNumberValue('runtime', value);
-                    if (this.filters.runtime_min !== this.filters.runtime_max && this.filters.runtime_min > this.filters.runtime_max) {
+                    if (this.filters.runtime_max !== null && this.filters.runtime_min > this.filters.runtime_max) {
                         this.filters.runtime_min = this.filters.runtime_max;
                     }
                 },
@@ -641,7 +641,7 @@
 
                 set(value) {
                     this.filters.runtime_max = this.checkInputNumberValue('runtime', value);
-                    if (this.filters.runtime_max !== this.filters.runtime_min && this.filters.runtime_max < this.filters.runtime_min) {
+                    if (this.filters.runtime_min !== null && this.filters.runtime_max < this.filters.runtime_min) {
                         this.filters.runtime_max = this.filters.runtime_min;
                     }
                 },
@@ -654,7 +654,7 @@
 
                 set(value) {
                     this.filters.vote_average_min = this.checkInputNumberValue('vote_average', value);
-                    if (this.filters.vote_average_min !== this.filters.vote_average_max && this.filters.vote_average_min > this.filters.vote_average_max) {
+                    if (this.filters.vote_average_max !== null && this.filters.vote_average_min > this.filters.vote_average_max) {
                         this.filters.vote_average_min = this.filters.vote_average_max;
                     }
                 },
@@ -667,7 +667,7 @@
 
                 set(value) {
                     this.filters.vote_average_max = this.checkInputNumberValue('vote_average', value);
-                    if (this.filters.vote_average_max !== this.filters.vote_average_min && this.filters.vote_average_max < this.filters.vote_average_min) {
+                    if (this.filters.vote_average_min !== null && this.filters.vote_average_max < this.filters.vote_average_min) {
                         this.filters.vote_average_max = this.filters.vote_average_min;
                     }
                 },
@@ -680,7 +680,7 @@
 
                 set(value) {
                     this.filters.vote_count_min = this.checkInputNumberValue('vote_count', value);
-                    if (this.filters.vote_count_min !== this.filters.vote_count_max && this.filters.vote_count_min > this.filters.vote_count_max) {
+                    if (this.filters.vote_count_max !== null && this.filters.vote_count_min > this.filters.vote_count_max) {
                         this.filters.vote_count_min = this.filters.vote_count_max;
                     }
                 },
@@ -693,7 +693,7 @@
 
                 set(value) {
                     this.filters.vote_count_max = this.checkInputNumberValue('vote_count', value);
-                    if (this.filters.vote_count_max !== this.filters.vote_count_min && this.filters.vote_count_max < this.filters.vote_count_min) {
+                    if (this.filters.vote_count_min !== null && this.filters.vote_count_max < this.filters.vote_count_min) {
                         this.filters.vote_count_max = this.filters.vote_count_min;
                     }
                 },
