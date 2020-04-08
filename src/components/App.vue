@@ -21,6 +21,7 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto mr-2">
+                    <AppTablePageSizeMenu/>
                     <AppTableFieldsTogglerMenu/>
                     <li
                         v-if="filtersButtonIsShown"
@@ -55,6 +56,7 @@
     import AppSearchPhraseForm from './AppSearchPhraseForm';
     import AppTable from './AppTable';
     import AppTableFieldsTogglerMenu from './AppTableFieldsTogglerMenu';
+    import AppTablePageSizeMenu from './AppTablePageSizeMenu';
     import AppPaginator from './AppPaginator';
     import {faFilter} from '@fortawesome/free-solid-svg-icons';
 
@@ -72,6 +74,7 @@
             AppFiltersMenu,
             AppTable,
             AppTableFieldsTogglerMenu,
+            AppTablePageSizeMenu,
             AppPaginator,
         },
 

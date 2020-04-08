@@ -5,58 +5,75 @@
         role="group"
         aria-label="Pagination"
     >
-        <div class="btn-group dropup" role="group">
-            <button id="pageManualSelect" type="button" class="btn btn-light border dropdown-toggle app-dropdown-button-left-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Page:
-            </button>
-            <div class="dropdown-menu p-3" aria-labelledby="pageManualSelect">
-                <div class="form-group">
-                    <label for="pageNumberForm">Choose page:</label>
-                    <input
-                        id="pageNumberForm"
-                        type="number"
-                        class="form-control"
-                        min="1"
-                        :max="pageCount"
-                        :placeholder="currentPageNumber"
-                        v-model.number="pageInputFormData"
-                    >
-                </div>
-                <button
-                    type="button"
-                    class="btn btn-primary border"
-                    :disabled="pageInputFormData === currentPageNumber || pageInputFormData < 1 || pageInputFormData > pageCount"
-                    @click="changePage(pageInputFormData)"
-                >
-                    Let's go
-                </button>
-            </div>
-        </div>
+        <button
+            type="button"
+            class="btn btn-light border d-md-none"
+            :disabled="isFirstPage || loading"
+            @click="firstPage"
+        >
+            <fa :icon="angleDoubleLeftIcon"/>
+        </button>
         <button
             type="button"
             class="btn btn-light border"
             :disabled="isFirstPage || loading"
             @click="prevPage"
         >
-            <fa :icon="angleDoubleLeftIcon"/>
+            <fa :icon="angleLeftIcon"/>
         </button>
         <template
             v-for="page in items"
         >
-            <button
+            <div
                 v-if="page.active"
                 :key="`page_item_${page.label}`"
-                type="button"
-                class="btn btn-primary border"
-                :disabled="loading"
+                class="btn-group"
+                role="group"
             >
-                {{ page.label }}
-            </button>
+                <button
+                    id="pageManualSelect"
+                    type="button"
+                    class="btn btn-primary border dropdown-toggle app-paginator-current-page-button"
+                    :disabled="loading"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                >
+                    {{ page.label }}
+                </button>
+                <div class="dropdown-menu p-3 app-paginator-page-selector" aria-labelledby="pageManualSelect">
+                    <div class="form-group">
+                        <label for="pageNumberForm">Choose page:</label>
+                        <div class="input-group">
+                            <input
+                                id="pageNumberForm"
+                                type="number"
+                                class="form-control"
+                                min="1"
+                                :max="pageCount"
+                                :placeholder="currentPageNumber"
+                                v-model.number="pageInputFormData"
+                            >
+                            <div class="input-group-append">
+                                <span class="input-group-text">of {{ pageCount }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-primary border"
+                        :disabled="pageInputFormData === currentPageNumber || pageInputFormData < 1 || pageInputFormData > pageCount"
+                        @click="changePage(pageInputFormData)"
+                    >
+                        Let's go
+                    </button>
+                </div>
+            </div>
             <button
                 v-else-if="page.disable"
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-light border"
+                class="btn btn-light border d-none d-md-block"
                 disabled
             >
                 ...
@@ -65,7 +82,7 @@
                 v-else
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-light border"
+                class="btn btn-light border d-none d-md-block"
                 :disabled="loading"
                 @click="changePage(page.label)"
             >
@@ -77,30 +94,20 @@
             :disabled="isLastPage || loading"
             @click.prevent="nextPage"
         >
+            <fa :icon="angleRightIcon"/>
+        </button>
+        <button
+            class="btn btn-light border d-md-none"
+            :disabled="isLastPage || loading"
+            @click.prevent="lastPage"
+        >
             <fa :icon="angleDoubleRightIcon"/>
         </button>
-        <div class="btn-group dropup" role="group">
-            <button id="pageSizeSelect" type="button" class="btn btn-light border dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Page size: {{ pageSize }}
-            </button>
-            <div class="dropdown-menu p-3 app-page-size-menu" aria-labelledby="pageSizeSelect">
-                <a
-                    v-for="size of availablePageSizes"
-                    :key="`page_size_${size}`"
-                    class="dropdown-item"
-                    :class="{ 'text-primary disabled': size === pageSize }"
-                    href="#"
-                    @click.prevent="setPageSize(size)"
-                >
-                    {{ size }}
-                </a>
-            </div>
-        </div>
     </div>
 </template>
 
 <script>
-    import {faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+    import {faAngleLeft, faAngleRight, faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'AppPaginator',
@@ -113,6 +120,14 @@
         },
 
         computed: {
+            angleLeftIcon() {
+                return faAngleLeft;
+            },
+
+            angleRightIcon() {
+                return faAngleRight;
+            },
+
             angleDoubleLeftIcon() {
                 return faAngleDoubleLeft;
             },
@@ -131,14 +146,6 @@
 
             currentPageNumber() {
                 return this.$store.state.currentPageNumber;
-            },
-
-            pageSize() {
-                return this.$store.state.pageSize;
-            },
-
-            availablePageSizes() {
-                return this.$store.state.availablePageSizes;
             },
 
             isFirstPage() {
@@ -199,8 +206,12 @@
                 this.changePage(pageNumber);
             },
 
-            setPageSize(size) {
-                this.$router.push({ path: this.$route.path, query: { ...this.$route.query, page_size: size } });
+            firstPage() {
+                this.changePage(1);
+            },
+
+            lastPage() {
+                this.changePage(this.pageCount);
             },
         },
 
