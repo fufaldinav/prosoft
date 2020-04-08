@@ -29,7 +29,7 @@
                     >
                         <a
                             class="nav-link"
-                            :class="{ disabled: loading }"
+                            :class="filtersLinkClass"
                             href="#"
                             role="button"
                             data-toggle="modal"
@@ -85,6 +85,17 @@
 
             loading() {
                 return this.$store.state.loading;
+            },
+
+            isAnyFilter() {
+                return this.$store.getters.isAnyFilterExceptSearch;
+            },
+
+            filtersLinkClass() {
+                return {
+                    'text-success': this.isAnyFilter,
+                    'disabled': this.loading,
+                };
             },
         },
 

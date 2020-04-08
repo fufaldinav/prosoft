@@ -6,6 +6,7 @@
         <a
             id="pageSizeDropdown"
             class="nav-link dropdown-toggle"
+            :class="{ 'disabled': loading }"
             role="button"
             href="#"
             data-toggle="dropdown"

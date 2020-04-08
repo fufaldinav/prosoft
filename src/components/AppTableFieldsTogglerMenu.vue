@@ -5,8 +5,8 @@
     >
         <a
             id="fieldsDropdown"
-            class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
-            :class="hasHiddenFields ? 'text-danger' : 'text-secondary'"
+            class="nav-link dropdown-toggle"
+            :class="fieldsLinkClass"
             role="button"
             href="#"
             data-toggle="dropdown"
@@ -29,19 +29,21 @@
                         </span>
                 <span
                     class="ml-2"
-                    :class="field.shown === true ? 'text-success' : 'text-danger'"
+                    :class="field.shown ? 'text-success' : 'text-danger'"
                 >
-                            <fa :icon="field.shown === true ? eyeIcon : eyeSlashIcon"/>
+                            <fa :icon="field.shown ? eyeIcon : eyeSlashIcon"/>
                         </span>
             </a>
-            <div class="dropdown-divider"></div>
-            <a
-                class="dropdown-item"
-                href="#"
-                @click.prevent="showAllFields()"
-            >
-                Show all
-            </a>
+            <template v-if="hasHiddenFields">
+                <div class="dropdown-divider"></div>
+                <a
+                    class="dropdown-item"
+                    href="#"
+                    @click.prevent="showAllFields()"
+                >
+                    Show all
+                </a>
+            </template>
         </div>
     </li>
 </template>
@@ -67,6 +69,10 @@
                 return faEyeSlash;
             },
 
+            loading() {
+                return this.$store.state.loading;
+            },
+
             fields() {
                 return this.$store.state.fields;
             },
@@ -78,11 +84,18 @@
             hasHiddenFields() {
                 return this.hiddenFields.length > 0;
             },
+
+            fieldsLinkClass() {
+                return {
+                    'text-danger': this.hasHiddenFields,
+                    'disabled': this.loading,
+                };
+            },
         },
 
         methods: {
             toggleField(fieldName) {
-                if (this.fields[fieldName].shown === true) {
+                if (this.fields[fieldName].shown) {
                     this.$store.commit('hideField', fieldName);
                 } else {
                     this.$store.commit('showField', fieldName);
@@ -91,7 +104,7 @@
 
             showAllFields() {
                 for (let fieldName of this.hiddenFields) {
-                    if (this.fields[fieldName].shown !== true) {
+                    if (! this.fields[fieldName].shown) {
                         this.$store.commit('showField', fieldName);
                     }
                 }

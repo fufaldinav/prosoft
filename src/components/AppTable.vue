@@ -24,14 +24,14 @@
                             {{ fields[fieldName].title }}
                         </span>
                         <a
-                            class="text-danger mr-1 app-hide-field-icon"
+                            class="text-danger mr-1 d-none d-md-block app-hide-field-icon"
                             href="#"
                             @click.prevent="hideField(fieldName)"
                         >
                             <fa :icon="eyeSlashIcon"/>
                         </a>
                         <a
-                            v-if="fields[fieldName].hasOwnProperty('sortable') && fields[fieldName].sortable === true"
+                            v-if="fields[fieldName].hasOwnProperty('sortable') && fields[fieldName].sortable"
                             class="text-dark app-sort-icon"
                             :class="{ 'app-sort-icon-active': sortField === fieldName }"
                             href="#"

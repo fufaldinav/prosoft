@@ -131,6 +131,18 @@ export default new Vuex.Store({
             });
         },
 
+        isAnyFilterExceptSearch: state => {
+            for (const filterName in state.filters) {
+                if (filterName === 'search') continue;
+                if (Array.isArray(state.filters[filterName])) {
+                    if (state.filters[filterName].length > 0) return true;
+                } else {
+                    if (state.filters[filterName] !== null) return true;
+                }
+            }
+            return false;
+        },
+
         getReleaseDateMinValueInMs: state => {
             return Date.parse(state.filtersRanges.release_date_min);
         },

@@ -2,8 +2,17 @@
     <div class="modal fade app-filters-menu" id="filtersMenu" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="filtersMenuTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header d-flex align-items-center">
                     <h5 class="modal-title" id="filtersMenuTitle">Filters</h5>
+                    <a
+                        v-show="isAnyFilter"
+                        href="#"
+                        class="badge badge-pill badge-danger ml-2"
+                        data-dismiss="modal"
+                        @click.prevent="resetFilters()"
+                    >
+                        reset all
+                    </a>
                     <button
                         type="button"
                         class="close"
@@ -408,6 +417,7 @@
                     <button
                         type="button"
                         class="btn btn-danger mr-auto"
+                        :disabled="! isAnyFilter"
                         data-dismiss="modal"
                         @click="resetFilters()"
                     >
@@ -469,6 +479,10 @@
         computed: {
             currentFilters() {
                 return this.$store.state.filters;
+            },
+
+            isAnyFilter() {
+                return this.$store.getters.isAnyFilterExceptSearch;
             },
 
             filtersRanges() {
