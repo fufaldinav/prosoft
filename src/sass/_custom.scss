@@ -6,6 +6,10 @@ body {
   padding-top: 56px;
 }
 
+a.btn:disabled, button.btn:disabled {
+  cursor: default;
+}
+
 .app-dropdown-button-left-caret::before {
   display: inline-block;
   margin-left: 0.255em;
