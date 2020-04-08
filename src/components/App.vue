@@ -2,12 +2,19 @@
     <div id="app">
         <nav class="navbar navbar-light navbar-expand-md bg-light shadow-sm fixed-top">
             <a
-                class="navbar-brand"
+                class="navbar-brand mr-1"
                 href="#"
                 @click.prevent="reloadPage()"
             >
                 Moviepedia
             </a>
+            <div
+                v-if="loading"
+                class="spinner-grow spinner-grow-sm text-primary mr-auto"
+                role="status"
+            >
+                <span class="sr-only">Loading...</span>
+            </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"/>
             </button>
@@ -39,7 +46,6 @@
             <RouterView/>
         </main>
         <AppPaginator/>
-        <AppProgressBar/>
         <AppFiltersMenu/>
     </div>
 </template>
@@ -50,7 +56,6 @@
     import AppTable from './AppTable';
     import AppTableFieldsTogglerMenu from './AppTableFieldsTogglerMenu';
     import AppPaginator from './AppPaginator';
-    import AppProgressBar from './AppProgressBar';
     import {faFilter} from '@fortawesome/free-solid-svg-icons';
 
     export default {
@@ -68,7 +73,6 @@
             AppTable,
             AppTableFieldsTogglerMenu,
             AppPaginator,
-            AppProgressBar,
         },
 
         computed: {
