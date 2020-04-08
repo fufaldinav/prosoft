@@ -1,8 +1,9 @@
 <template>
     <div
-        v-if="pageCount > 0"
+        v-if="shown && pageCount > 0"
         class="btn-group mb-0 bg-light rounded shadow app-paginator"
-        role="group" aria-label="Pagination"
+        role="group"
+        aria-label="Pagination"
     >
         <div class="btn-group dropup" role="group">
             <button id="pageManualSelect" type="button" class="btn btn-light border dropdown-toggle app-dropdown-button-left-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -15,16 +16,16 @@
                         id="pageNumberForm"
                         type="number"
                         class="form-control"
-                        v-model.number="pageInputFormData"
                         min="1"
                         :max="pageCount"
                         :placeholder="currentPageNumber"
+                        v-model.number="pageInputFormData"
                     >
                 </div>
                 <button
                     type="button"
                     class="btn btn-primary border"
-                    :disabled="pageInputFormData < 1 || pageInputFormData > pageCount"
+                    :disabled="pageInputFormData === currentPageNumber || pageInputFormData < 1 || pageInputFormData > pageCount"
                     @click="changePage(pageInputFormData)"
                 >
                     Let's go
@@ -46,7 +47,7 @@
                 v-if="page.active"
                 :key="`page_item_${page.label}`"
                 type="button"
-                class="btn btn-primary border app-page-button-active"
+                class="btn btn-primary border"
                 :disabled="loading"
             >
                 {{ page.label }}
@@ -56,7 +57,7 @@
                 :key="`page_item_${page.label}`"
                 type="button"
                 class="btn btn-light border"
-                :disabled="loading"
+                disabled
             >
                 ...
             </button>
@@ -87,7 +88,7 @@
                     v-for="size of availablePageSizes"
                     :key="`page_size_${size}`"
                     class="dropdown-item"
-                    :class="{ 'disabled': size === pageSize }"
+                    :class="{ 'text-primary disabled': size === pageSize }"
                     href="#"
                     @click.prevent="setPageSize(size)"
                 >
@@ -106,6 +107,7 @@
 
         data() {
             return {
+                shown: false,
                 pageInputFormData: 1,
             };
         },
@@ -203,9 +205,10 @@
         },
 
         watch: {
-            $route(to, from) {
-                this.pageInputFormData = to.query.page || this.currentPageNumber;
-            }
+            $route(to) {
+                this.shown = to.name === 'table';
+                this.pageInputFormData = this.currentPageNumber;
+            },
         },
     };
 </script>

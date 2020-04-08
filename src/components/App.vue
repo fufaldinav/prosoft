@@ -14,72 +14,25 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto mr-2">
-                    <li class="nav-item dropdown">
+                    <AppTableFieldsTogglerMenu/>
+                    <li
+                        v-if="filtersButtonIsShown"
+                        class="nav-item"
+                    >
                         <a
-                            id="fieldsDropdown"
-                            class="nav-link dropdown-toggle app-toggle-fields-menu-icon"
-                            :class="hasHiddenFields ? 'text-danger' : 'text-secondary'"
-                            role="button"
+                            class="nav-link"
+                            :class="{ disabled: loading }"
                             href="#"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
+                            role="button"
+                            data-toggle="modal"
+                            data-target="#filtersMenu"
                         >
-                            Fields
-                            <fa :icon="hasHiddenFields ? eyeSlashIcon : eyeIcon"/>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fieldsDropdown">
-                            <a
-                                v-for="(field, fieldName) in fields"
-                                :key="`hidden_field_${fieldName}`"
-                                class="dropdown-item d-flex"
-                                href="#"
-                                @click.prevent.stop="toggleField(fieldName)"
-                            >
-                        <span class="mr-auto">
-                            {{ field.title }}
-                        </span>
-                                <span
-                                    class="ml-2"
-                                    :class="field.shown === true ? 'text-success' : 'text-danger'"
-                                >
-                            <fa :icon="field.shown === true ? eyeIcon : eyeSlashIcon"/>
-                        </span>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a
-                                class="dropdown-item"
-                                href="#"
-                                @click.prevent="showAllFields()"
-                            >
-                                Show all
-                            </a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#filtersMenu">
                             Filters
-                            <fa :icon="filterIcon"/>
+                            <fa :icon="filtersIcon"/>
                         </a>
                     </li>
                 </ul>
-                <form class="form-inline">
-                    <input
-                        v-model="searchPhrase"
-                        class="form-control form-control-sm mr-sm-2 app-phrase-search-input"
-                        type="search"
-                        placeholder="phrase from movie..."
-                        aria-label="Search"
-                    >
-                    <button
-                        class="btn btn-sm btn-success my-2 my-sm-0"
-                        type="button"
-                        :disabled="searchPhrase === '' || searchPhrase === null"
-                        @click="phraseSearch()"
-                    >
-                        Search
-                    </button>
-                </form>
+                <AppSearchPhraseForm/>
             </div>
         </nav>
         <main>
@@ -93,45 +46,38 @@
 
 <script>
     import AppFiltersMenu from './AppFiltersMenu';
+    import AppSearchPhraseForm from './AppSearchPhraseForm';
     import AppTable from './AppTable';
+    import AppTableFieldsTogglerMenu from './AppTableFieldsTogglerMenu';
     import AppPaginator from './AppPaginator';
     import AppProgressBar from './AppProgressBar';
-    import {faFilter, faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+    import {faFilter} from '@fortawesome/free-solid-svg-icons';
 
     export default {
         name: 'App',
 
         data() {
             return {
-                searchPhrase: null,
+                filtersButtonIsShown: false,
             };
         },
 
-        components: { AppFiltersMenu, AppTable, AppPaginator, AppProgressBar },
+        components: {
+            AppSearchPhraseForm,
+            AppFiltersMenu,
+            AppTable,
+            AppTableFieldsTogglerMenu,
+            AppPaginator,
+            AppProgressBar,
+        },
 
         computed: {
-            filterIcon() {
+            filtersIcon() {
                 return faFilter;
             },
 
-            eyeIcon() {
-                return faEye;
-            },
-
-            eyeSlashIcon() {
-                return faEyeSlash;
-            },
-
-            fields() {
-                return this.$store.state.fields;
-            },
-
-            hiddenFields() {
-                return this.$store.getters.getHiddenFields;
-            },
-
-            hasHiddenFields() {
-                return this.hiddenFields.length > 0;
+            loading() {
+                return this.$store.state.loading;
             },
         },
 
@@ -139,28 +85,11 @@
             reloadPage() {
                 this.$router.go(0);
             },
+        },
 
-            phraseSearch() {
-                this.$router.push({
-                    path: this.$route.path,
-                    query: { ...this.$route.query, search: this.searchPhrase },
-                });
-            },
-
-            toggleField(fieldName) {
-                if (this.fields[fieldName].shown === true) {
-                    this.$store.commit('hideField', fieldName);
-                } else {
-                    this.$store.commit('showField', fieldName);
-                }
-            },
-
-            showAllFields() {
-                for (let fieldName of this.hiddenFields) {
-                    if (this.fields[fieldName].shown !== true) {
-                        this.$store.commit('showField', fieldName);
-                    }
-                }
+        watch: {
+            $route(to) {
+                this.filtersButtonIsShown = to.name === 'table';
             },
         },
     };

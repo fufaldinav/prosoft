@@ -558,7 +558,7 @@ export default new Vuex.Store({
 
                         let responseData = response.data;
 
-                        if (! 'ok' in responseData || responseData.ok !== true) {
+                        if (! responseData.hasOwnProperty('ok') || responseData.ok !== true) {
                             throw new Error('Response is not ok =((');
                         }
 
@@ -636,11 +636,8 @@ export default new Vuex.Store({
                         commit('setLoading', false);
                     });
             });
-        }
-        ,
+        },
     },
 
-    modules: {}
-    ,
-})
-;
+    modules: {},
+});

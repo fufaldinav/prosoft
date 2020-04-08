@@ -9,7 +9,7 @@
                         class="close"
                         data-dismiss="modal"
                         aria-label="Close"
-                        @click="resetFilters()"
+                        @click="loadFilters()"
                     >
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -409,7 +409,7 @@
                         type="button"
                         class="btn btn-danger mr-auto"
                         data-dismiss="modal"
-                        @click="applyFilters()"
+                        @click="resetFilters()"
                     >
                         Reset all
                     </button>
@@ -425,7 +425,7 @@
                         type="button"
                         class="btn btn-secondary"
                         data-dismiss="modal"
-                        @click="resetFilters()"
+                        @click="loadFilters()"
                     >
                         Cancel
                     </button>
@@ -441,8 +441,8 @@
 
         data() {
             return {
-                searchPhrase: null,
                 filters: {
+                    search: null,            //String
                     adult: null,             //Boolean
                     budget_min: null,        //Integer
                     budget_max: null,        //Integer
@@ -703,12 +703,22 @@
         },
 
         methods: {
-            resetFilters() {
+            loadFilters() {
                 for (let filterName in this.currentFilters) {
                     if (this.filters.hasOwnProperty(filterName)) {
                         this.filters[filterName] = this.currentFilters[filterName];
                     }
                 }
+            },
+
+            resetFilters() {
+                this.$store.commit('clearAllFilters');
+                this.$router.push({ path: this.$route.path, query: this.query })
+                    .catch(err => {
+                        if (err && err.hasOwnProperty('name') && err.name === 'NavigationDuplicated') {
+                            this.$router.go(0); //TODO лучший путь обработки дублирующегося пути
+                        }
+                    });
             },
 
             resetRangedFilter(fieldName) {
@@ -774,9 +784,8 @@
         },
 
         watch: {
-            $route(to, from) {
-                this.searchPhrase = this.$store.state.search;
-                this.resetFilters();
+            $route() {
+                this.loadFilters();
             },
         },
     };

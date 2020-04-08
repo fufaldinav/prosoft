@@ -183,7 +183,7 @@
                                     vm.$router.replace('/error');
                                 });
                         } else {
-                            // console.log(123); //TODO обработка ошибки
+                            //TODO обработка ошибки
                         }
                     });
             });
@@ -197,10 +197,10 @@
             this.$store.dispatch('loadMovies', this.query)
                 .then(() => {
                     if (this.query.page > this.pageCount) {
-                        next();
-                        this.$router.replace({
+                        next({
                             path: to.path,
                             query: { ...this.query, page: this.pageCount },
+                            replace: true,
                         });
                     } else {
                         next();
