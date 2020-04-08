@@ -6,7 +6,7 @@
                 href="#"
                 @click.prevent="reloadPage()"
             >
-                Moviepedia //TODO фильтр даты выхода
+                Moviepedia
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"/>

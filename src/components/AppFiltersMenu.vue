@@ -68,9 +68,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.budget_min"
-                                        :max="filtersMinMax.budget_max"
-                                        :placeholder="`min: ${filtersMinMax.budget_min}`"
+                                        :min="filtersRanges.budget_min"
+                                        :max="filtersRanges.budget_max"
+                                        :placeholder="`min: ${filtersRanges.budget_min}`"
                                         v-model.number="budgetMin"
                                     >
                                 </div>
@@ -78,9 +78,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.budget_min"
-                                        :max="filtersMinMax.budget_max"
-                                        :placeholder="`max: ${filtersMinMax.budget_max}`"
+                                        :min="filtersRanges.budget_min"
+                                        :max="filtersRanges.budget_max"
+                                        :placeholder="`max: ${filtersRanges.budget_max}`"
                                         v-model.number="budgetMax"
                                     >
                                 </div>
@@ -156,9 +156,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.popularity_min"
-                                        :max="filtersMinMax.popularity_max"
-                                        :placeholder="`min: ${filtersMinMax.popularity_min}`"
+                                        :min="filtersRanges.popularity_min"
+                                        :max="filtersRanges.popularity_max"
+                                        :placeholder="`min: ${filtersRanges.popularity_min}`"
                                         v-model.number="popularityMin"
                                     >
                                 </div>
@@ -166,9 +166,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.popularity_min"
-                                        :max="filtersMinMax.popularity_max"
-                                        :placeholder="`max: ${filtersMinMax.popularity_max}`"
+                                        :min="filtersRanges.popularity_min"
+                                        :max="filtersRanges.popularity_max"
+                                        :placeholder="`max: ${filtersRanges.popularity_max}`"
                                         v-model.number="popularityMax"
                                     >
                                 </div>
@@ -177,12 +177,38 @@
                         <!-- Release date -->
                         <div class="form-group">
                             <label for="filterReleaseDate">Release date</label>
+                            <a
+                                v-show="releaseDateMin !== null || releaseDateMax !== null"
+                                href="#"
+                                class="badge badge-pill badge-danger"
+                                @click.prevent="resetRangedFilter('release_date')"
+                            >
+                                reset
+                            </a>
                             <div id="filterReleaseDate" class="form-row">
                                 <div class="col">
-                                    <input type="date" class="form-control" placeholder="min">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        :min="filtersRanges.release_date_min"
+                                        :max="filtersRanges.release_date_max"
+                                        :placeholder="`max: ${filtersRanges.release_date_min}`"
+                                        v-model="releaseDateMin"
+                                        @focus="setInputTypeToDate($event)"
+                                        @blur="setInputTypeToText($event)"
+                                    >
                                 </div>
                                 <div class="col">
-                                    <input type="date" class="form-control" placeholder="max">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        :min="filtersRanges.release_date_min"
+                                        :max="filtersRanges.release_date_max"
+                                        :placeholder="`max: ${filtersRanges.release_date_max}`"
+                                        v-model="releaseDateMax"
+                                        @focus="setInputTypeToDate($event)"
+                                        @blur="setInputTypeToText($event)"
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -202,9 +228,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.revenue_min"
-                                        :max="filtersMinMax.revenue_max"
-                                        :placeholder="`min: ${filtersMinMax.revenue_min}`"
+                                        :min="filtersRanges.revenue_min"
+                                        :max="filtersRanges.revenue_max"
+                                        :placeholder="`min: ${filtersRanges.revenue_min}`"
                                         v-model.number="revenueMin"
                                     >
                                 </div>
@@ -212,9 +238,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.revenue_min"
-                                        :max="filtersMinMax.revenue_max"
-                                        :placeholder="`max: ${filtersMinMax.revenue_max}`"
+                                        :min="filtersRanges.revenue_min"
+                                        :max="filtersRanges.revenue_max"
+                                        :placeholder="`max: ${filtersRanges.revenue_max}`"
                                         v-model.number="revenueMax"
                                     >
                                 </div>
@@ -236,9 +262,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.runtime_min"
-                                        :max="filtersMinMax.runtime_max"
-                                        :placeholder="`min: ${filtersMinMax.runtime_min}`"
+                                        :min="filtersRanges.runtime_min"
+                                        :max="filtersRanges.runtime_max"
+                                        :placeholder="`min: ${filtersRanges.runtime_min}`"
                                         v-model.number="runtimeMin"
                                     >
                                 </div>
@@ -246,9 +272,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.runtime_min"
-                                        :max="filtersMinMax.runtime_max"
-                                        :placeholder="`max: ${filtersMinMax.runtime_max}`"
+                                        :min="filtersRanges.runtime_min"
+                                        :max="filtersRanges.runtime_max"
+                                        :placeholder="`max: ${filtersRanges.runtime_max}`"
                                         v-model.number="runtimeMax"
                                     >
                                 </div>
@@ -324,9 +350,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.vote_average_min"
-                                        :max="filtersMinMax.vote_average_max"
-                                        :placeholder="`min: ${filtersMinMax.vote_average_min}`"
+                                        :min="filtersRanges.vote_average_min"
+                                        :max="filtersRanges.vote_average_max"
+                                        :placeholder="`min: ${filtersRanges.vote_average_min}`"
                                         v-model.number="voteAverageMin"
                                     >
                                 </div>
@@ -334,9 +360,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.vote_average_min"
-                                        :max="filtersMinMax.vote_average_max"
-                                        :placeholder="`max: ${filtersMinMax.vote_average_max}`"
+                                        :min="filtersRanges.vote_average_min"
+                                        :max="filtersRanges.vote_average_max"
+                                        :placeholder="`max: ${filtersRanges.vote_average_max}`"
                                         v-model.number="voteAverageMax"
                                     >
                                 </div>
@@ -358,9 +384,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.vote_count_min"
-                                        :max="filtersMinMax.vote_count_max"
-                                        :placeholder="`min: ${filtersMinMax.vote_count_min}`"
+                                        :min="filtersRanges.vote_count_min"
+                                        :max="filtersRanges.vote_count_max"
+                                        :placeholder="`min: ${filtersRanges.vote_count_min}`"
                                         v-model.number="voteCountMin"
                                     >
                                 </div>
@@ -368,9 +394,9 @@
                                     <input
                                         type="number"
                                         class="form-control"
-                                        :min="filtersMinMax.vote_count_min"
-                                        :max="filtersMinMax.vote_count_max"
-                                        :placeholder="`max: ${filtersMinMax.vote_count_max}`"
+                                        :min="filtersRanges.vote_count_min"
+                                        :max="filtersRanges.vote_count_max"
+                                        :placeholder="`max: ${filtersRanges.vote_count_max}`"
                                         v-model.number="voteCountMax"
                                     >
                                 </div>
@@ -445,8 +471,8 @@
                 return this.$store.state.filters;
             },
 
-            filtersMinMax() {
-                return this.$store.state.filtersMinMax;
+            filtersRanges() {
+                return this.$store.state.filtersRanges;
             },
 
             budgetMin: {
@@ -455,8 +481,8 @@
                 },
 
                 set(value) {
-                    this.filters.budget_min = this.checkInputValue('budget', value);
-                    if (this.filters.budget_max !== null && this.filters.budget_min > this.filters.budget_max) {
+                    this.filters.budget_min = this.checkInputNumberValue('budget', value);
+                    if (this.filters.budget_min !== this.filters.budget_max && this.filters.budget_min > this.filters.budget_max) {
                         this.filters.budget_min = this.filters.budget_max;
                     }
                 },
@@ -468,8 +494,8 @@
                 },
 
                 set(value) {
-                    this.filters.budget_max = this.checkInputValue('budget', value);
-                    if (this.filters.budget_min !== null && this.filters.budget_max < this.filters.budget_min) {
+                    this.filters.budget_max = this.checkInputNumberValue('budget', value);
+                    if (this.filters.budget_max !== this.filters.budget_min && this.filters.budget_max < this.filters.budget_min) {
                         this.filters.budget_max = this.filters.budget_min;
                     }
                 },
@@ -481,8 +507,8 @@
                 },
 
                 set(value) {
-                    this.filters.popularity_min = this.checkInputValue('popularity', value);
-                    if (this.filters.popularity_max !== null && this.filters.popularity_min > this.filters.popularity_max) {
+                    this.filters.popularity_min = this.checkInputNumberValue('popularity', value);
+                    if (this.filters.popularity_min !== this.filters.popularity_max && this.filters.popularity_min > this.filters.popularity_max) {
                         this.filters.popularity_min = this.filters.popularity_max;
                     }
                 },
@@ -494,9 +520,63 @@
                 },
 
                 set(value) {
-                    this.filters.popularity_max = this.checkInputValue('popularity', value);
-                    if (this.filters.popularity_min !== null && this.filters.popularity_max < this.filters.popularity_min) {
+                    this.filters.popularity_max = this.checkInputNumberValue('popularity', value);
+                    if (this.filters.popularity_max !== this.filters.popularity_min && this.filters.popularity_max < this.filters.popularity_min) {
                         this.filters.popularity_max = this.filters.popularity_min;
+                    }
+                },
+            },
+
+            releaseDateMinValueInMs() {
+                return this.$store.getters.getReleaseDateMinValueInMs;
+            },
+
+            releaseDateMaxValueInMs() {
+                return this.$store.getters.getReleaseDateMaxValueInMs;
+            },
+
+            releaseDateMin: {
+                get() {
+                    return this.filters.release_date_min;
+                },
+
+                set(value) {
+                    value = this.checkInputDateValue('release_date', value);
+                    const valueInMs = value === null ? null : Date.parse(value);
+                    const releaseDateMaxInMs = this.filters.release_date_max === null ? null : Date.parse(this.filters.release_date_max);
+                    if (isNaN(valueInMs) || valueInMs === null) {
+                        this.filters.release_date_min = null;
+                    } else if (valueInMs < this.releaseDateMinValueInMs) {
+                        this.filters.release_date_min = this.releaseDateMinValueInMs;
+                    } else if (valueInMs > this.releaseDateMaxValueInMs) {
+                        this.filters.release_date_min = this.releaseDateMaxValueInMs;
+                    } else if (releaseDateMaxInMs !== null && valueInMs > releaseDateMaxInMs) {
+                        this.filters.release_date_min = this.filters.release_date_max;
+                    } else {
+                        this.filters.release_date_min = value;
+                    }
+                },
+            },
+
+            releaseDateMax: {
+                get() {
+                    return this.filters.release_date_max;
+                },
+
+                set(value) {
+                    value = this.checkInputDateValue('release_date', value);
+                    const valueInMs = value === null ? null : Date.parse(value);
+                    const releaseDateMinInMs = this.filters.release_date_min === null ? null : Date.parse(this.filters.release_date_min);
+                    if (isNaN(valueInMs) || valueInMs === null) {
+                        this.filters.release_date_max = null;
+                    } else if (valueInMs < this.releaseDateMinValueInMs) {
+                        this.filters.release_date_max = this.releaseDateMinValueInMs;
+                    } else if (valueInMs > this.releaseDateMaxValueInMs) {
+                        this.filters.release_date_max = this.releaseDateMaxValueInMs;
+                    } else if (releaseDateMinInMs !== null && valueInMs < releaseDateMinInMs) {
+                        this.filters.release_date_max = this.filters.release_date_min;
+                    } else {
+                        this.filters.release_date_max = value;
                     }
                 },
             },
@@ -507,8 +587,8 @@
                 },
 
                 set(value) {
-                    this.filters.revenue_min = this.checkInputValue('revenue', value);
-                    if (this.filters.revenue_max !== null && this.filters.revenue_min > this.filters.revenue_max) {
+                    this.filters.revenue_min = this.checkInputNumberValue('revenue', value);
+                    if (this.filters.revenue_min !== this.filters.revenue_max && this.filters.revenue_min > this.filters.revenue_max) {
                         this.filters.revenue_min = this.filters.revenue_max;
                     }
                 },
@@ -520,8 +600,8 @@
                 },
 
                 set(value) {
-                    this.filters.revenue_max = this.checkInputValue('revenue', value);
-                    if (this.filters.revenue_min !== null && this.filters.revenue_max < this.filters.revenue_min) {
+                    this.filters.revenue_max = this.checkInputNumberValue('revenue', value);
+                    if (this.filters.revenue_max !== this.filters.revenue_min && this.filters.revenue_max < this.filters.revenue_min) {
                         this.filters.revenue_max = this.filters.revenue_min;
                     }
                 },
@@ -533,8 +613,8 @@
                 },
 
                 set(value) {
-                    this.filters.runtime_min = this.checkInputValue('runtime', value);
-                    if (this.filters.runtime_max !== null && this.filters.runtime_min > this.filters.runtime_max) {
+                    this.filters.runtime_min = this.checkInputNumberValue('runtime', value);
+                    if (this.filters.runtime_min !== this.filters.runtime_max && this.filters.runtime_min > this.filters.runtime_max) {
                         this.filters.runtime_min = this.filters.runtime_max;
                     }
                 },
@@ -546,8 +626,8 @@
                 },
 
                 set(value) {
-                    this.filters.runtime_max = this.checkInputValue('runtime', value);
-                    if (this.filters.runtime_min !== null && this.filters.runtime_max < this.filters.runtime_min) {
+                    this.filters.runtime_max = this.checkInputNumberValue('runtime', value);
+                    if (this.filters.runtime_max !== this.filters.runtime_min && this.filters.runtime_max < this.filters.runtime_min) {
                         this.filters.runtime_max = this.filters.runtime_min;
                     }
                 },
@@ -559,8 +639,8 @@
                 },
 
                 set(value) {
-                    this.filters.vote_average_min = this.checkInputValue('vote_average', value);
-                    if (this.filters.vote_average_max !== null && this.filters.vote_average_min > this.filters.vote_average_max) {
+                    this.filters.vote_average_min = this.checkInputNumberValue('vote_average', value);
+                    if (this.filters.vote_average_min !== this.filters.vote_average_max && this.filters.vote_average_min > this.filters.vote_average_max) {
                         this.filters.vote_average_min = this.filters.vote_average_max;
                     }
                 },
@@ -572,8 +652,8 @@
                 },
 
                 set(value) {
-                    this.filters.vote_average_max = this.checkInputValue('vote_average', value);
-                    if (this.filters.vote_average_min !== null && this.filters.vote_average_max < this.filters.vote_average_min) {
+                    this.filters.vote_average_max = this.checkInputNumberValue('vote_average', value);
+                    if (this.filters.vote_average_max !== this.filters.vote_average_min && this.filters.vote_average_max < this.filters.vote_average_min) {
                         this.filters.vote_average_max = this.filters.vote_average_min;
                     }
                 },
@@ -585,8 +665,8 @@
                 },
 
                 set(value) {
-                    this.filters.vote_count_min = this.checkInputValue('vote_count', value);
-                    if (this.filters.vote_count_max !== null && this.filters.vote_count_min > this.filters.vote_count_max) {
+                    this.filters.vote_count_min = this.checkInputNumberValue('vote_count', value);
+                    if (this.filters.vote_count_min !== this.filters.vote_count_max && this.filters.vote_count_min > this.filters.vote_count_max) {
                         this.filters.vote_count_min = this.filters.vote_count_max;
                     }
                 },
@@ -598,8 +678,8 @@
                 },
 
                 set(value) {
-                    this.filters.vote_count_max = this.checkInputValue('vote_count', value);
-                    if (this.filters.vote_count_min !== null && this.filters.vote_count_max < this.filters.vote_count_min) {
+                    this.filters.vote_count_max = this.checkInputNumberValue('vote_count', value);
+                    if (this.filters.vote_count_max !== this.filters.vote_count_min && this.filters.vote_count_max < this.filters.vote_count_min) {
                         this.filters.vote_count_max = this.filters.vote_count_min;
                     }
                 },
@@ -654,18 +734,42 @@
                 return typeof value === 'number' && isFinite(value) && ! isNaN(value);
             },
 
-            checkInputValue(fieldName, value) {
-                const min = fieldName + '_min';
-                const max = fieldName + '_max';
-                if (! this.isNumber(value) || ! this.filtersMinMax.hasOwnProperty(min) || ! this.filtersMinMax.hasOwnProperty(max)) {
+            checkInputNumberValue(fieldName, value) {
+                const minPropName = fieldName + '_min';
+                const maxPropName = fieldName + '_max';
+                if (! this.isNumber(value) || ! this.filtersRanges.hasOwnProperty(minPropName) || ! this.filtersRanges.hasOwnProperty(maxPropName)) {
                     return null;
-                } else if (value < this.filtersMinMax[min]) {
-                    return this.filtersMinMax[min];
-                } else if (value > this.filtersMinMax[max]) {
-                    return this.filtersMinMax[max];
+                } else if (value < this.filtersRanges[minPropName]) {
+                    return this.filtersRanges[minPropName];
+                } else if (value > this.filtersRanges[maxPropName]) {
+                    return this.filtersRanges[maxPropName];
                 } else {
                     return value;
                 }
+            },
+
+            checkInputDateValue(fieldName, value) {
+                const minPropName = fieldName + '_min';
+                const maxPropName = fieldName + '_max';
+                if (! this.filtersRanges.hasOwnProperty(minPropName) || ! this.filtersRanges.hasOwnProperty(maxPropName)) {
+                    return null;
+                } else {
+                    return value;
+                }
+            },
+
+            setInputTypeToDate(event) {
+                if (event.type !== 'focus' || event.target === null || event.target.tagName !== 'INPUT' || event.target.type === 'date') {
+                    return;
+                }
+                event.target.type = 'date';
+            },
+
+            setInputTypeToText(event) {
+                if (event.type !== 'blur' || event.target === null || event.target.tagName !== 'INPUT' || event.target.type === 'text') {
+                    return;
+                }
+                event.target.type = 'text';
             },
         },
 
