@@ -21,6 +21,10 @@ a.btn:disabled, button.btn:disabled {
   opacity: 1;
 }
 
+.app-table.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 251, 0.075);
+}
+
 .app-table-cell-wrapper {
   height: 1.25rem;
 }

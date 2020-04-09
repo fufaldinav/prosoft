@@ -1,6 +1,6 @@
 <template>
     <div class="bg-light table-responsive h-100">
-        <table class="table table-bordered table-striped table-sm app-table">
+        <table class="table table-bordered table-striped table-hover table-sm app-table">
             <col style="width: 4rem;"/>
             <col
                 v-for="fieldName in displayedFields"
