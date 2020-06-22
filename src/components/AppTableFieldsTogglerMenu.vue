@@ -56,7 +56,7 @@
 
         data() {
             return {
-                shown: false,
+                shown: true,
             };
         },
 

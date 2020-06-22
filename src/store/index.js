@@ -34,8 +34,8 @@ export default new Vuex.Store({
     state: {
         loading: false,
         currentPageNumber: 1, //здесь и далее отсчёт страниц начинается с единицы, читай коммент в запросе
-        pageSize: 25,
-        availablePageSizes: [10, 25, 50, 100, 250, 500], //доступные "размеры" страниц
+        pageSize: 50,
+        availablePageSizes: [0, 25, 50, 100, 250, 500], //доступные "размеры" страниц
         fields: {
             id: { title: 'ID', shown: true, width: 6 },
             title: { title: 'Title', shown: true, width: 12 },
@@ -556,11 +556,27 @@ export default new Vuex.Store({
             }
         },
 
-        loadMovies({ commit, state }, query = {}) {
+        loadMovies({ commit, state, dispatch }, query) {
+            return new Promise((resolve, reject) => {
+                if (state.movies.length > 0) {
+                    commit('clearMovies');
+                }
+
+                dispatch('loadData', query)
+                    .then(response => {
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        },
+
+        loadData({ commit, state }, query) {
             return new Promise((resolve, reject) => {
                 commit('setLoading', true);
 
-                return axios.post('http://185.185.69.80:8082/list', {
+                axios.post('http://185.185.69.80:8082/list', {
                     ...query,
                     page: (query.page ? query.page : state.currentPageNumber) - 1, //перед отправкой запроса причёсываем нумерацию
                     page_size: query.page_size ? query.page_size : state.pageSize,  //чтобы случайно не загрузить всю базу
@@ -568,30 +584,21 @@ export default new Vuex.Store({
                     .then(response => {
                         console.log(response.data); //TODO удалить
 
-                        let responseData = response.data;
+                        const data = response.data;
 
-                        if (! responseData.hasOwnProperty('ok') || responseData.ok !== true) {
+                        if (! data.hasOwnProperty('ok') || data.ok !== true) {
                             throw new Error('Response is not ok =((');
                         }
 
-                        const dataSize = responseData.data_size ? responseData.data_size : 0;
-                        const movies = responseData.data ? responseData.data : [];
-
-                        if (dataSize === 0) {
-                            throw new Error('No data returned');
+                        if (! data.hasOwnProperty('data_size') || data.data_size === 0) {
+                            throw new Error('Data size is 0');
                         }
 
-                        if (dataSize !== state.dataSize) {
-                            commit('setDataSize', dataSize);
+                        if (data.data_size !== state.dataSize) {
+                            commit('setDataSize', data.data_size);
                         }
 
-                        if (movies.length === 0) {
-                            resolve(dataSize);
-                        }
-
-                        if (state.movies.length > 0) {
-                            commit('clearMovies');
-                        }
+                        const movies = data.hasOwnProperty('data') ? data.data : [];
 
                         for (let movie of movies) {
                             if (movie.belongs_to_collection !== null) {
@@ -639,7 +646,7 @@ export default new Vuex.Store({
                             commit('addMovie', movie);
                         }
 
-                        resolve(dataSize);
+                        resolve(data.data_size);
                     })
                     .catch(error => {
                         reject(error); //TODO обработка ошибки загрузки

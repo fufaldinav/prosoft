@@ -51,7 +51,7 @@
 
         data() {
             return {
-                shown: false,
+                shown: true,
                 searchPhrase: null,
             };
         },

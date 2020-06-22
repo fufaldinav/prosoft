@@ -65,7 +65,7 @@
 
         data() {
             return {
-                filtersButtonIsShown: false,
+                filtersButtonIsShown: true,
             };
         },
 

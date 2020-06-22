@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="shown && pageCount > 0"
+        v-if="shown && pageCount > 0 && pageSize === 0"
         class="btn-group mb-0 bg-light rounded shadow app-paginator"
         role="group"
         aria-label="Pagination"
@@ -114,7 +114,7 @@
 
         data() {
             return {
-                shown: false,
+                shown: true,
                 pageInputFormData: 1,
             };
         },
@@ -138,6 +138,10 @@
 
             loading() {
                 return this.$store.state.loading;
+            },
+
+            pageSize() {
+                return this.$store.state.pageSize;
             },
 
             pageCount() {
